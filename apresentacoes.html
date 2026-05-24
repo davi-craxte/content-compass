@@ -9,11 +9,13 @@
 body{background:#080810;color:#e8e8f0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;min-height:100vh}
 
 /* NAV */
-.topbar{background:#0f0f18;border-bottom:1px solid #1e1e2e;padding:14px 24px;display:flex;align-items:center;gap:16px}
-.topbar a{color:#7c6af7;text-decoration:none;font-size:13px;display:flex;align-items:center;gap:4px}
-.topbar a:hover{color:#a78bfa}
-.topbar h1{font-size:16px;font-weight:700;flex:1;text-align:center}
-.topbar .hint{font-size:11px;color:#555;background:#1a1a2a;padding:5px 12px;border-radius:20px}
+.nav{background:#111118;border-bottom:1px solid #22222e;padding:0 20px;display:flex;align-items:center;gap:4px;position:sticky;top:0;z-index:50;flex-wrap:wrap}
+.nav-logo{margin-right:auto;padding:14px 0;display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px;text-decoration:none;color:#e8e8f0}
+.nav-logo .ico{width:32px;height:32px;background:linear-gradient(135deg,#7c6af7,#a78bfa);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.navbtn{border:none;background:none;color:#888;cursor:pointer;font-size:13px;font-weight:500;padding:16px 14px;border-bottom:2px solid transparent;transition:.15s;text-decoration:none;display:inline-flex;align-items:center}
+.navbtn:hover{color:#e8e8f0}
+.navbtn.on{color:#a78bfa;border-bottom-color:#a78bfa;font-weight:600}
+.nav-hint{font-size:11px;color:#555;background:#1a1a2a;padding:5px 12px;border-radius:20px;margin-left:8px;white-space:nowrap}
 
 /* GALLERY */
 .gallery{padding:28px 24px;max-width:1000px;margin:0 auto}
@@ -103,11 +105,16 @@ body{background:#080810;color:#e8e8f0;font-family:-apple-system,BlinkMacSystemFo
 </head>
 <body>
 
-<div class="topbar">
-  <a href="index.html">← Voltar ao app</a>
-  <h1>🎨 Apresentações prontas para postar</h1>
-  <div class="hint">📸 Abra · Screenshot · Poste</div>
-</div>
+<nav class="nav">
+  <a href="index.html" class="nav-logo"><div class="ico">🧭</div>Content Compass</a>
+  <a href="index.html#hoje" class="navbtn">⚡ Hoje</a>
+  <a href="index.html#semana" class="navbtn">📅 Semana</a>
+  <a href="index.html#gerar" class="navbtn">✨ Gerar</a>
+  <a href="index.html#cal" class="navbtn">🗓 Mês</a>
+  <a href="index.html#guia" class="navbtn">🔬 Guia</a>
+  <a href="apresentacoes.html" class="navbtn on">🎨 Apresentações</a>
+  <span class="nav-hint">📸 Screenshot · Poste</span>
+</nav>
 
 <div class="gallery" id="gallery">
   <div class="gallery-title">Todos os carrosseis do mês — prontos para screenshot</div>

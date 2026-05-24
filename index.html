@@ -12,7 +12,7 @@ body{background:#0c0c0f;color:#e8e8f0;font-family:-apple-system,BlinkMacSystemFo
 .nav{background:#111118;border-bottom:1px solid #22222e;padding:0 20px;display:flex;align-items:center;gap:4px;position:sticky;top:0;z-index:50}
 .nav-logo{margin-right:auto;padding:14px 0;display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px}
 .nav-logo .ico{width:32px;height:32px;background:linear-gradient(135deg,#7c6af7,#a78bfa);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px}
-.navbtn{border:none;background:none;color:#888;cursor:pointer;font-size:13px;font-weight:500;padding:16px 14px;border-bottom:2px solid transparent;transition:.15s}
+.navbtn{border:none;background:none;color:#888;cursor:pointer;font-size:13px;font-weight:500;padding:16px 14px;border-bottom:2px solid transparent;transition:.15s;text-decoration:none;display:inline-flex;align-items:center}
 .navbtn:hover{color:#e8e8f0}
 .navbtn.on{color:#7c6af7;border-bottom-color:#7c6af7;font-weight:600}
 
@@ -165,11 +165,11 @@ body{background:#0c0c0f;color:#e8e8f0;font-family:-apple-system,BlinkMacSystemFo
 <nav class="nav">
   <div class="nav-logo"><div class="ico">🧭</div>Content Compass</div>
   <button class="navbtn on" onclick="go('hoje',this)">⚡ Hoje</button>
-  <a href="apresentacoes.html" style="margin-left:4px;padding:8px 14px;background:#8b5cf620;color:#a78bfa;border:1px solid #8b5cf640;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap">🎨 Apresentações</a>
   <button class="navbtn" onclick="go('semana',this)">📅 Semana</button>
   <button class="navbtn" onclick="go('gerar',this)">✨ Gerar</button>
   <button class="navbtn" onclick="go('cal',this)">🗓 Mês</button>
   <button class="navbtn" onclick="go('guia',this)">🔬 Guia</button>
+  <a href="apresentacoes.html" class="navbtn">🎨 Apresentações</a>
 </nav>
 
 <!-- ══ HOJE ══ -->
