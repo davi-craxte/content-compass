@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Content Compass · Davi Cardoso</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0c0c0f;color:#e8e8f0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;min-height:100vh}
+
+/* NAV */
+.nav{background:#111118;border-bottom:1px solid #22222e;padding:0 20px;display:flex;align-items:center;gap:4px;position:sticky;top:0;z-index:50}
+.nav-logo{margin-right:auto;padding:14px 0;display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px}
+.nav-logo .ico{width:32px;height:32px;background:linear-gradient(135deg,#7c6af7,#a78bfa);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px}
+.navbtn{border:none;background:none;color:#888;cursor:pointer;font-size:13px;font-weight:500;padding:16px 14px;border-bottom:2px solid transparent;transition:.15s}
+.navbtn:hover{color:#e8e8f0}
+.navbtn.on{color:#7c6af7;border-bottom-color:#7c6af7;font-weight:600}
+
+/* SCREENS */
+.screen{display:none;padding:24px 20px;max-width:760px;margin:0 auto}
+.screen.on{display:block}
+
+/* HOJE — hero card */
+.today-card{border-radius:18px;padding:28px;margin-bottom:20px;position:relative;overflow:hidden}
+.today-card::before{content:'';position:absolute;inset:0;opacity:.08;background:radial-gradient(circle at 80% 20%, #fff 0%, transparent 60%)}
+.today-badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:14px;padding:4px 10px;border-radius:20px;background:rgba(0,0,0,.3)}
+.today-badge .pulse{width:7px;height:7px;border-radius:50%;animation:p 2s infinite}
+@keyframes p{0%,100%{opacity:1}50%{opacity:.3}}
+.today-h{font-size:26px;font-weight:800;line-height:1.2;margin-bottom:6px}
+.today-sub{font-size:14px;opacity:.7;margin-bottom:20px}
+.time-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:7px 16px;font-size:14px;font-weight:700;margin-bottom:20px}
+
+/* CONTENT TABS */
+.ctabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.ctab{border:none;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;transition:.15s;background:rgba(0,0,0,.3);color:rgba(255,255,255,.5)}
+.ctab:hover{color:#fff;background:rgba(0,0,0,.5)}
+.ctab.on{color:#fff}
+
+/* CONTENT AREA */
+.content-area{background:rgba(0,0,0,.3);border-radius:12px;padding:18px;min-height:120px;transition:.15s}
+.content-area pre{white-space:pre-wrap;font-family:inherit;font-size:14px;line-height:1.8;color:#e8e8f0}
+.slide-list{display:flex;flex-direction:column;gap:8px}
+.slide-row{background:rgba(255,255,255,.05);border-radius:8px;padding:12px 14px;border-left:3px solid}
+.slide-num{font-size:10px;font-weight:700;margin-bottom:4px;opacity:.6;text-transform:uppercase}
+.slide-txt{font-size:13px;line-height:1.6}
+.script-row{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.script-row:last-child{border:none}
+.stag{font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;white-space:nowrap;flex-shrink:0;margin-top:2px}
+.stxt{font-size:13px;line-height:1.6}
+.tags-area{font-size:13px;line-height:1.9;color:#a78bfa}
+.tip-box{font-size:13px;line-height:1.6;color:rgba(255,255,255,.7)}
+.tip-box strong{color:#fff}
+
+/* ACTION BUTTONS */
+.actions{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
+.abtn{border:none;border-radius:10px;padding:11px 18px;font-size:13px;font-weight:600;cursor:pointer;transition:.15s;display:flex;align-items:center;gap:6px}
+.abtn-copy{background:rgba(255,255,255,.08);color:#e8e8f0;border:1px solid rgba(255,255,255,.12)}
+.abtn-copy:hover{background:rgba(255,255,255,.14)}
+.abtn-next{background:rgba(255,255,255,.06);color:#888;border:1px solid rgba(255,255,255,.08)}
+.abtn-next:hover{color:#e8e8f0;background:rgba(255,255,255,.1)}
+.abtn-done{background:#10b981;color:#fff}
+.abtn-done:hover{background:#059669}
+.abtn-undo{background:#1e1e2a;color:#10b981;border:1px solid #10b98140}
+.done-check{margin-top:14px;background:#10b98115;border:1px solid #10b98140;border-radius:10px;padding:12px 16px;font-size:13px;font-weight:600;color:#10b981;display:flex;align-items:center;gap:8px}
+
+/* WEEK SCREEN */
+.week-grid{display:flex;flex-direction:column;gap:10px}
+.week-card{background:#111118;border:1px solid #22222e;border-radius:14px;overflow:hidden;cursor:pointer;transition:.15s}
+.week-card:hover{border-color:rgba(255,255,255,.15);transform:translateY(-1px)}
+.week-card.today-wk{box-shadow:0 0 0 2px rgba(124,106,247,.4)}
+.wk-head{display:flex;align-items:center;gap:14px;padding:14px 18px}
+.wk-day{text-align:center;min-width:44px}
+.wk-day .dn{font-size:11px;font-weight:700;text-transform:uppercase;opacity:.5;margin-bottom:2px}
+.wk-day .dd{font-size:22px;font-weight:800}
+.wk-info{flex:1}
+.wk-type{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px}
+.wk-title{font-size:14px;font-weight:600;color:#e8e8f0}
+.wk-right{display:flex;align-items:center;gap:8px}
+.wk-time{font-size:12px;font-weight:600;background:#1e1e2a;border:1px solid #2a2a38;border-radius:6px;padding:4px 10px;color:#888}
+.wk-check{font-size:18px;color:#10b981}
+.wk-arrow{color:#444;font-size:16px;transition:.15s}
+.week-card:hover .wk-arrow{color:#888}
+.wk-body{display:none;border-top:1px solid #1a1a24;padding:16px 18px}
+.wk-body.open{display:block}
+
+/* GENERATE SCREEN */
+.gen-intro{font-size:15px;color:#888;margin-bottom:24px}
+.gen-types{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px}
+@media(max-width:500px){.gen-types{grid-template-columns:repeat(2,1fr)}}
+.gen-type-btn{border:none;border-radius:14px;padding:18px 12px;cursor:pointer;transition:.15s;text-align:center;border:2px solid transparent}
+.gen-type-btn:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.1)}
+.gen-type-btn.sel{border-color:rgba(255,255,255,.3)}
+.gen-type-btn .icon{font-size:28px;margin-bottom:8px;display:block}
+.gen-type-btn .label{font-size:12px;font-weight:700;color:#fff}
+.gen-result{background:#111118;border:1px solid #22222e;border-radius:16px;padding:22px;margin-top:4px}
+.gen-result-head{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.gen-result-head .type-pill{font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px}
+.gen-result-head .fmt{font-size:12px;color:#888}
+.gen-result-title{font-size:18px;font-weight:700;margin-bottom:16px;line-height:1.3}
+.hidden{display:none}
+
+/* CALENDAR SCREEN */
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.cal-header h2{font-size:18px;font-weight:700}
+.cal-nav{display:flex;gap:4px}
+.cal-nav button{background:#111118;border:1px solid #22222e;color:#888;width:34px;height:34px;border-radius:8px;cursor:pointer;font-size:16px;transition:.15s}
+.cal-nav button:hover{color:#e8e8f0;border-color:#3a3a4e}
+.cal-stats{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+.cal-stat{background:#111118;border:1px solid #22222e;border-radius:10px;padding:12px 16px;flex:1;min-width:80px}
+.cal-stat .v{font-size:22px;font-weight:800;color:#7c6af7}
+.cal-stat .l{font-size:11px;color:#888;margin-top:2px}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.cal-dh{text-align:center;font-size:10px;font-weight:600;color:#555;padding:5px 0;text-transform:uppercase}
+.cal-dc{background:#111118;border:1px solid #22222e;border-radius:10px;padding:8px 6px;min-height:68px;cursor:pointer;transition:.15s;position:relative}
+.cal-dc:hover{border-color:#3a3a4e;transform:translateY(-1px)}
+.cal-dc.empty{background:transparent;border-color:transparent;cursor:default}
+.cal-dc.empty:hover{transform:none;border-color:transparent}
+.cal-dc.is-today{box-shadow:0 0 0 2px #7c6af7}
+.cal-dc.is-posted{opacity:.55}
+.cal-dc.is-posted::after{content:'✓';position:absolute;top:5px;right:6px;font-size:12px;color:#10b981;font-weight:700}
+.cal-dc .cdn{font-size:13px;font-weight:700;margin-bottom:5px}
+.cal-dc .cpill{font-size:9px;font-weight:600;padding:2px 5px;border-radius:4px;display:inline-block;line-height:1.5}
+.cal-dc .cico{font-size:14px;display:block;margin-top:3px}
+.cal-legend{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+.leg{display:flex;align-items:center;gap:5px;font-size:11px;color:#666;background:#111118;border:1px solid #1e1e2a;padding:4px 10px;border-radius:16px}
+.leg-dot{width:7px;height:7px;border-radius:50%}
+
+/* GUIDE */
+.guide-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.gcard{background:#111118;border:1px solid #22222e;border-radius:14px;padding:20px}
+.gcard .gi{font-size:26px;margin-bottom:10px}
+.gcard h3{font-size:14px;font-weight:700;margin-bottom:8px}
+.gcard p{font-size:12px;color:#888;line-height:1.6;margin-bottom:10px}
+.glist{list-style:none}
+.glist li{font-size:12px;color:#888;padding:5px 0;border-bottom:1px solid #1a1a24;display:flex;gap:8px;line-height:1.5;align-items:flex-start}
+.glist li:last-child{border:none}
+.gb{color:#7c6af7;font-weight:700;flex-shrink:0}
+.gstat{display:flex;align-items:center;gap:8px;background:#1a1a24;border-radius:8px;padding:10px;margin-top:8px}
+.gsn{font-size:20px;font-weight:800;color:#7c6af7}
+.gsl{font-size:11px;color:#888;line-height:1.4}
+.ladder{display:flex;flex-direction:column;gap:6px}
+.lrung{display:flex;align-items:center;gap:10px;background:#1a1a24;border-radius:8px;padding:10px}
+.lrn{width:24px;height:24px;border-radius:50%;background:#7c6af7;color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.lrt strong{font-size:12px;display:block}
+.lrt span{font-size:11px;color:#888}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:#10b981;color:#fff;padding:12px 20px;border-radius:10px;font-size:13px;font-weight:600;transform:translateY(80px);opacity:0;transition:.3s;z-index:200;pointer-events:none}
+.toast.show{transform:translateY(0);opacity:1}
+
+/* MODAL */
+.moverlay{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:100;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s}
+@media(min-width:600px){.moverlay{align-items:center}}
+.moverlay.open{opacity:1;pointer-events:all}
+.mbox{background:#14141c;border:1px solid #22222e;border-radius:20px 20px 0 0;width:100%;max-width:680px;max-height:92vh;overflow-y:auto;transform:translateY(40px);transition:transform .25s;padding:24px}
+@media(min-width:600px){.mbox{border-radius:20px;transform:translateY(20px)}}
+.moverlay.open .mbox{transform:translateY(0)}
+.mbox-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.mbox-close{background:#1e1e2a;border:1px solid #2a2a38;color:#888;width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:.15s}
+.mbox-close:hover{color:#e8e8f0}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-logo"><div class="ico">🧭</div>Content Compass</div>
+  <button class="navbtn on" onclick="go('hoje',this)">⚡ Hoje</button>
+  <button class="navbtn" onclick="go('semana',this)">📅 Semana</button>
+  <button class="navbtn" onclick="go('gerar',this)">✨ Gerar</button>
+  <button class="navbtn" onclick="go('cal',this)">🗓 Mês</button>
+  <button class="navbtn" onclick="go('guia',this)">🔬 Guia</button>
+</nav>
+
+<!-- ══ HOJE ══ -->
+<div class="screen on" id="s-hoje"></div>
+
+<!-- ══ SEMANA ══ -->
+<div class="screen" id="s-semana">
+  <div class="week-grid" id="weekGrid"></div>
+</div>
+
+<!-- ══ GERAR ══ -->
+<div class="screen" id="s-gerar">
+  <p class="gen-intro">Escolha o tipo de post que quer gerar:</p>
+  <div class="gen-types" id="genTypes"></div>
+  <div class="gen-result hidden" id="genResult"></div>
+</div>
+
+<!-- ══ MÊS ══ -->
+<div class="screen" id="s-cal">
+  <div class="cal-header">
+    <h2 id="calTitle"></h2>
+    <div class="cal-nav">
+      <button onclick="calNav(-1)">‹</button>
+      <button onclick="calNav(1)">›</button>
+    </div>
+  </div>
+  <div class="cal-stats" id="calStats"></div>
+  <div class="cal-grid" id="calGrid"></div>
+  <div class="cal-legend" id="calLegend"></div>
+</div>
+
+<!-- ══ GUIA ══ -->
+<div class="screen" id="s-guia">
+  <div class="guide-grid" id="guideGrid"></div>
+</div>
+
+<!-- MODAL (calendar day) -->
+<div class="moverlay" id="moverlay" onclick="closeMov(event)">
+  <div class="mbox">
+    <div class="mbox-head">
+      <div>
+        <div id="mTitle" style="font-size:16px;font-weight:700"></div>
+        <div id="mSub" style="font-size:12px;color:#888;margin-top:2px"></div>
+      </div>
+      <button class="mbox-close" onclick="closeMov()">✕</button>
+    </div>
+    <div id="mBody"></div>
+    <div style="display:flex;gap:8px;margin-top:16px;justify-content:flex-end">
+      <button class="abtn abtn-copy" onclick="closeMov()">Fechar</button>
+      <button class="abtn abtn-done" id="mDoneBtn" onclick="mTogglePosted()">✓ Marcar postado</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════
+// COLORS (hex, no CSS vars)
+// ═══════════════════════════════
+const C = {
+  1:'#f59e0b', 2:'#f97316', 3:'#10b981',
+  4:'#8b5cf6', 5:'#ec4899', 6:'#06b6d4', 7:'#4b5563'
+};
+function cbg(id){ return C[id]+'20'; }
+function hex(id){ return C[id]; }
+
+// ═══════════════════════════════
+// TYPES
+// ═══════════════════════════════
+const TYPES = [
+  {id:1, name:'Lifestyle Aspiracional', short:'Lifestyle',   emoji:'✨', time:'18:30', fmt:'Foto'},
+  {id:2, name:'Engajamento',            short:'Engajamento', emoji:'💬', time:'12:00', fmt:'Foto + Texto'},
+  {id:3, name:'Educação Financeira',    short:'Educação',    emoji:'📊', time:'18:00', fmt:'Carrossel'},
+  {id:4, name:'Posicionamento',         short:'Posição',     emoji:'💼', time:'07:30', fmt:'Foto + Texto'},
+  {id:5, name:'Bastidores',             short:'Bastidores',  emoji:'🎬', time:'11:00', fmt:'Reels / Foto'},
+  {id:6, name:'Prova Social',           short:'Resultado',   emoji:'🏆', time:'09:30', fmt:'Carrossel'},
+  {id:7, name:'Descanso',              short:'Descanso',    emoji:'😌', time:null,    fmt:'Stories'}
+];
+
+// ═══════════════════════════════
+// CONTENT DATABASE
+// ═══════════════════════════════
+const POSTS = {
+1:[
+  {
+    title:'A vida que você constrói enquanto trabalha duro',
+    tip:'📸 Foto sua em viagem, restaurante bacana ou momento de descanso real. Foto sua — não stock photo.',
+    caption:`A vida que você constrói enquanto trabalha duro.
+
+Médico, você opera por horas. Salva vidas. Chega em casa esgotado.
+
+Mas quem está construindo o seu futuro financeiro enquanto você faz tudo isso?
+
+Liberdade financeira não é luxo de quem tem sorte.
+É a consequência de quem planejou.
+
+Qual é o sonho que você quer realizar nos próximos 5 anos?
+Me conta aqui embaixo. 👇`,
+    tags:'#médico #liberdadefinanceira #consultorfinanceiro #patrimônio #médicos #investimentos'
+  },
+  {
+    title:'Liberdade financeira não é luxo — é planejamento',
+    tip:'📸 Foto estilo premium: café, escritório arrumado ou natureza. Transmita tranquilidade e conquista.',
+    caption:`Liberdade financeira não é luxo.
+É planejamento.
+
+Todo médico que conheço quer:
+✅ Trabalhar por escolha, não por obrigação
+✅ Tirar férias sem culpa
+✅ Ter patrimônio que cresce enquanto dorme
+
+Isso não é sorte.
+É estratégia financeira bem feita.
+
+Você já tem a sua estratégia clara?
+Sim ou Não nos comentários. 👇`,
+    tags:'#médico #patrimônio #liberdade #consultorfinanceiro #investimentos'
+  },
+  {
+    title:'O que medicina e finanças têm em comum',
+    tip:'🗂️ Carrossel com 5 slides. Fundo escuro, tipografia limpa. Um conceito por slide.',
+    slides:[
+      {num:'Slide 1 — Gancho', txt:'O que medicina e finanças têm em comum?\n(A maioria dos médicos nunca parou pra pensar nisso)'},
+      {num:'Slide 2', txt:'Ambas salvam vidas.\nUma cuida do seu corpo.\nA outra cuida do seu futuro.'},
+      {num:'Slide 3', txt:'Diagnóstico preciso antes de qualquer tratamento.\nVocê não opera sem exames.\nPor que investiria sem planejamento?'},
+      {num:'Slide 4', txt:'Prevenção vale mais que remédio.\nRiqueza construída aos poucos supera apostas de última hora.'},
+      {num:'Slide 5 — CTA', txt:'O especialista faz toda a diferença.\nVocê confia sua saúde ao generalista?\nSuas finanças merecem o mesmo nível.'}
+    ],
+    caption:`O que medicina e finanças têm em comum?
+
+Mais do que você imagina. 👆 Veja o carrossel.
+
+Você passou anos estudando para ser o melhor no que faz.
+Suas finanças merecem o mesmo nível de atenção especializada.
+
+Salva esse post — vale refletir. 🔖`,
+    tags:'#médico #finanças #planejamentofinanceiro #consultorfinanceiro'
+  }
+],
+2:[
+  {
+    title:'4 medos financeiros de médicos — qual é o seu?',
+    tip:'📸 Foto sua olhando direto para câmera, confiante. A força desse post é a pergunta.',
+    caption:`Vou ser direto.
+
+Esses são os 4 maiores medos financeiros que médicos me confessam:
+
+1️⃣ Investir errado e perder dinheiro
+2️⃣ Nunca conseguir parar de depender de plantões
+3️⃣ Não ter reserva real para emergência
+4️⃣ Não entender nada de investimentos e depender do banco
+
+Qual é o seu?
+
+Comenta o número aqui embaixo. 👇
+(Sem julgamento — quanto mais eu entendo a dor, mais posso ajudar)`,
+    tags:'#médico #finanças #dinheiro #consultorfinanceiro #patrimônio'
+  },
+  {
+    title:'Com quanto você quer se aposentar?',
+    tip:'📸 Foto sua com postura de quem faz uma pergunta. Selfie boa também funciona.',
+    caption:`Pergunta simples. Resposta difícil.
+
+Com quanto você quer se aposentar?
+
+A) R$ 1 milhão
+B) R$ 3 milhões
+C) R$ 10 milhões
+D) Ainda não calculei
+
+Fiz essa pergunta para mais de 50 médicos.
+A maioria marcou D — e isso é o problema.
+
+Você não consegue chegar em algum lugar se não sabe para onde está indo.
+
+Comenta a letra aqui. 📊
+Vou te dizer o que você precisaria fazer para chegar lá.`,
+    tags:'#médico #aposentadoria #patrimônio #finanças'
+  },
+  {
+    title:'Você tem um planejamento financeiro de verdade?',
+    tip:'📸 Foto direta, olhos para câmera. Esse post é uma pergunta honesta — transmita abertura.',
+    caption:`Pergunta honesta. Sem julgamento.
+
+Você tem um planejamento financeiro de verdade?
+
+"Tenho investimentos espalhados" não é planejamento.
+"Tenho uma previdência privada" não é estratégia.
+"Guardo um pouco todo mês" não é meta.
+
+Planejamento real é:
+→ Saber exatamente onde você está agora
+→ Saber exatamente onde quer chegar
+→ Ter um caminho claro entre os dois
+
+Sim ou Ainda não?
+Me conta nos comentários. 👇`,
+    tags:'#médico #planejamentofinanceiro #investimentos #consultorfinanceiro'
+  }
+],
+3:[
+  {
+    title:'Por que médicos perdem mais dinheiro que a maioria',
+    tip:'🗂️ 7 slides. Slide 1 precisa parar o scroll — use dado de pesquisa ou pergunta provocadora.',
+    slides:[
+      {num:'Slide 1 — Gancho', txt:'Por que médicos perdem mais dinheiro que a maioria?\n(Mesmo ganhando muito mais)'},
+      {num:'Slide 2', txt:'Não é falta de inteligência.\nMédicos são entre as pessoas mais inteligentes do Brasil.'},
+      {num:'Slide 3', txt:'"Lifestyle inflation"\nQuando a renda sobe, o padrão de vida sobe junto — e o que sobra para investir continua igual.'},
+      {num:'Slide 4', txt:'Ausência de educação financeira.\nMedicina ocupa 100% do tempo.\n"Depois" nunca chega.'},
+      {num:'Slide 5', txt:'Carga tributária sem planejamento.\nPagar mais imposto do que deve é comum. E evitável.'},
+      {num:'Slide 6', txt:'Confiar em produto bancário como estratégia.\nO banco tem meta. O consultor independente tem compromisso com você.'},
+      {num:'Slide 7 — CTA', txt:'A solução começa pelo diagnóstico.\nVocê já fez o seu?\n\n→ DM "DIAGNÓSTICO" e eu te ajudo.'}
+    ],
+    caption:`Por que médicos perdem mais dinheiro que a maioria?
+(Mesmo ganhando muito mais)
+
+👆 Veja o carrossel — é para você.
+
+Salva e manda para um colega médico que precisa ver isso. 🔖`,
+    tags:'#médico #finanças #errosfinanceiros #educaçãofinanceira #consultorfinanceiro'
+  },
+  {
+    title:'PJ médico: quando compensa — e quando é armadilha',
+    tip:'🗂️ 7 slides. Tema técnico mas muito procurado — use linguagem simples.',
+    slides:[
+      {num:'Slide 1 — Gancho', txt:'"Abre PJ que você vai pagar menos imposto."\n\nVerdade ou mito?'},
+      {num:'Slide 2', txt:'Depende.\nE quase ninguém te diz isso.'},
+      {num:'Slide 3', txt:'PJ compensa quando:\n✅ Faturamento acima de R$20k/mês\n✅ Despesas dedutíveis relevantes\n✅ Você tem disciplina para separar pró-labore dos lucros'},
+      {num:'Slide 4', txt:'PJ NÃO compensa quando:\n❌ Renda ainda baixa ou instável\n❌ Benefícios CLT são importantes\n❌ Você não quer lidar com contabilidade'},
+      {num:'Slide 5', txt:'Atenção: Simples Nacional vs. Lucro Presumido.\nA escolha errada do regime pode custar R$15k+ por ano.'},
+      {num:'Slide 6', txt:'A pergunta certa não é "PJ ou CLT".\nÉ: qual estrutura maximiza o que fica no seu bolso?'},
+      {num:'Slide 7 — CTA', txt:'Quer saber o que é melhor para o SEU caso?\nDM "PJ" e eu analiso com você.'}
+    ],
+    caption:`"Abre PJ que você vai pagar menos imposto."
+
+Você já ouviu isso?
+É verdade. Mas depende — e quase ninguém te explica quando.
+
+👆 Carrossel completo com tudo que você precisa saber.
+
+Comenta "PJ" se você tem essa dúvida. 👇`,
+    tags:'#médico #PJ #impostos #consultorfinanceiro #planejamentofiscal'
+  },
+  {
+    title:'Quanto um médico precisa investir para se aposentar rico',
+    tip:'🗂️ 6 slides. Use números reais. Médicos são racionais — dados concretos convencem mais que frases.',
+    slides:[
+      {num:'Slide 1 — Gancho', txt:'Quanto um médico precisa investir para se aposentar rico?\n(Os números vão te surpreender)'},
+      {num:'Slide 2', txt:'Cenário A:\nR$3.000/mês investidos dos 30 aos 65 anos\nRendimento médio: 8% ao ano\n\nResultado: ~R$6,5 milhões'},
+      {num:'Slide 3', txt:'Cenário B:\nR$5.000/mês investidos dos 35 aos 65 anos\n(começou 5 anos depois)\n\nResultado: ~R$7 milhões\nMas investiu R$600.000 A MAIS para chegar lá.'},
+      {num:'Slide 4', txt:'O tempo é o seu principal ativo.\nNão o valor que você investe.'},
+      {num:'Slide 5', txt:'Com R$3.000/mês:\nAos 30 → R$6,5 milhões\nAos 35 → R$4,3 milhões\nAos 40 → R$2,7 milhões\n\nCada ano que passa custa caro.'},
+      {num:'Slide 6 — CTA', txt:'Quando você vai começar?\n\nDM "APOSENTADORIA" e te mostro um plano real.'}
+    ],
+    caption:`Quanto um médico precisa investir para se aposentar rico?
+
+Os números no carrossel vão mudar a forma como você pensa sobre tempo. ☝️
+
+Salva e compartilha com quem ainda está esperando o "momento certo". ⏰`,
+    tags:'#médico #aposentadoria #juroscompostos #investimentos #educaçãofinanceira'
+  }
+],
+4:[
+  {
+    title:'Por que eu só atendo médicos',
+    tip:'📸 Foto profissional sua — escritório ou momento de trabalho. Transmite autoridade e intencionalidade.',
+    caption:`Por que eu só atendo médicos.
+
+Eu poderia atender qualquer pessoa.
+Mas escolhi não fazer isso.
+
+Quando você se especializa em um único perfil de cliente, você entende os problemas deles em profundidade que um generalista nunca vai alcançar.
+
+Eu sei que médico tem:
+→ Renda variável por plantão
+→ Complexidade com estrutura PJ e fiscal
+→ Pouco tempo para gestão financeira
+→ Alta renda, mas nem sempre alto patrimônio
+
+Esse conhecimento específico muda completamente a qualidade do que eu entrego.
+
+Você valoriza um especialista no seu nicho?`,
+    tags:'#consultorfinanceiro #nicho #médico #especialista #assessoriadedinvestimentos'
+  },
+  {
+    title:'Consultor independente vs. gerente de banco',
+    tip:'📸 Foto sua confiante, postura de autoridade. Esse post educa e diferencia ao mesmo tempo.',
+    caption:`Uma confusão que pode custar muito caro.
+
+Gerente de banco:
+❌ Tem meta de produto todo mês
+❌ Te vende o que o banco quer
+❌ Não tem visão completa da sua vida financeira
+
+Consultor independente:
+✅ Trabalha pelo SEU interesse
+✅ Acesso a todo o mercado
+✅ Visão 360° da sua saúde financeira
+
+O banco te vende.
+O consultor te assessora.
+
+Entender essa diferença pode mudar completamente o seu patrimônio em 10 anos.`,
+    tags:'#consultorfinanceiro #banco #médico #assessoriadedinvestimentos'
+  },
+  {
+    title:'Minha visão sobre o mercado para médicos investidores',
+    tip:'📸 Foto sua analisando algo — computador, relatório ou simplesmente pensativo.',
+    caption:`3 tendências que todo médico investidor precisa entender agora.
+
+1️⃣ Taxa de juros alta = janela histórica para renda fixa de qualidade
+Títulos pagando IPCA+7% ao ano são raros. Estamos nesse momento.
+
+2️⃣ Previdência PGBL pode reduzir seu IR em até 12% da renda bruta
+A maioria dos médicos não usa esse benefício. É dinheiro na mesa.
+
+3️⃣ FIIs de qualidade estão descontados
+Quem entrar agora vai agradecer em 5 anos.
+
+A maioria dos médicos vai ficar de fora por falta de orientação.
+Não precisa ser assim.`,
+    tags:'#mercadofinanceiro #médico #investimentos #consultorfinanceiro #rendafixa'
+  }
+],
+5:[
+  {
+    title:'Dentro do meu dia como consultor de médicos',
+    tip:'🎬 REELS 60s — filme em vertical, cortes rápidos. Começa direto, sem introdução.',
+    script:[
+      {tag:'GANCHO (0-3s)', txt:'"Deixa eu te mostrar como é um dia trabalhando com finanças de médicos"'},
+      {tag:'7h da manhã', txt:'Mostre café + análise de mercado. Fala: "Antes de qualquer reunião, analiso o mercado. Meus clientes merecem isso."'},
+      {tag:'9h reunião', txt:'Mostre tela (protegendo dados). "Revisão de portfólio com cliente. Médico cardiologista, 3 anos juntos."'},
+      {tag:'14h relatório', txt:'Digitando no computador. "Cada cliente tem um relatório personalizado. Sem modelo genérico."'},
+      {tag:'Fechamento', txt:'"É isso que faz diferença no patrimônio dos meus clientes. Quer entender como funciona? DM aqui."'}
+    ],
+    caption:`Um dia como consultor financeiro especializado em médicos. 👆
+
+Não é sobre produto.
+É sobre estratégia personalizada.
+
+Curioso como funciona?
+Me manda DM — primeira conversa é gratuita.`,
+    tags:'#bastidores #consultorfinanceiro #rotina #médico'
+  },
+  {
+    title:'O que descobri em uma reunião de consultoria hoje',
+    tip:'📸 Foto sua no escritório ou em reunião. Pareça reflexivo — esse post é uma história real.',
+    caption:`Reunião marcante hoje.
+
+Médico anestesista, 38 anos.
+Ganha bem. Sente que o dinheiro some.
+
+O que descobrimos juntos em 45 minutos:
+
+→ R$4.200/mês sendo drenados em taxas bancárias desnecessárias
+→ Previdência privada com custo 3x acima do mercado
+→ Zero proteção patrimonial para a família
+
+Três mudanças. Impacto enorme.
+
+É isso que uma boa consultoria faz.
+
+Você já fez uma revisão assim?`,
+    tags:'#bastidores #consultoriafinanceira #médico #patrimônio'
+  },
+  {
+    title:'Por que estudo mercado antes das 8h',
+    tip:'📸 Foto de manhã — café, notebook antes do dia começar. Naturalidade e autenticidade.',
+    caption:`Às 7h da manhã, quando o mercado ainda abre, eu já estou estudando.
+
+Não porque preciso.
+Porque meus clientes merecem que eu esteja na frente.
+
+Finanças não é passivo.
+É ativo. Exige atenção constante.
+
+É por isso que me especializo em médicos:
+eles também entendem o que é dedicação total à sua área.
+
+Você tem quem monitore seus investimentos com essa dedicação?`,
+    tags:'#rotina #consultorfinanceiro #mercado #médico'
+  }
+],
+6:[
+  {
+    title:'De plantões obrigatórios para liberdade de escolha',
+    tip:'🗂️ 6 slides. Nunca revele o nome. Use "Médico cliente" ou apenas a especialidade.',
+    slides:[
+      {num:'Slide 1 — Gancho', txt:'De plantões obrigatórios para liberdade de escolha.\n\nA história de um médico cliente meu.'},
+      {num:'Slide 2 — Antes', txt:'Cardiologista, 42 anos.\nQuando me procurou:\n→ 60h/semana de trabalho\n→ Nenhum planejamento\n→ Sensação de que nunca era suficiente'},
+      {num:'Slide 3 — Processo', txt:'O que construímos em 18 meses:\n→ Diagnóstico financeiro completo\n→ Fundo de emergência robusto\n→ Portfólio diversificado\n→ Previdência PGBL otimizada'},
+      {num:'Slide 4 — Resultado', txt:'Resultado hoje:\n→ Renda passiva = 40% das despesas\n→ Reduziu plantões sem reduzir patrimônio\n→ Sabe para onde vai cada real'},
+      {num:'Slide 5', txt:'A mudança não foi no salário.\nFoi na estratégia.'},
+      {num:'Slide 6 — CTA', txt:'Quer construir uma história parecida?\n\nDM aqui. Primeira conversa é gratuita.'}
+    ],
+    caption:`De plantões obrigatórios para liberdade de escolha.
+
+A história real de um médico cliente meu. 👆
+
+A mudança não foi no salário. Foi na estratégia.
+
+Quer construir algo parecido? Me manda DM. 📩`,
+    tags:'#resultado #médico #consultorfinanceiro #transformação #patrimônio'
+  },
+  {
+    title:'O que mudou para esse médico em 12 meses',
+    tip:'📸 Foto sua com expressão de orgulho ou satisfação. Você se orgulha dos resultados dos clientes.',
+    caption:`12 meses de consultoria. O que mudou.
+
+Médico especialista. Veio sem nenhum investimento organizado.
+
+Hoje:
+✅ Fundo de emergência de 6 meses montado
+✅ Renda fixa rendendo acima do CDI
+✅ PGBL economizando no IR todo ano
+✅ Plano claro para os próximos 10 anos
+✅ Paz de espírito que ele nunca tinha tido
+
+O mais importante não está no extrato.
+Está na clareza.
+
+DM se você quer esse tipo de resultado. 📩`,
+    tags:'#resultado #médico #investimentos #planejamento #consultorfinanceiro'
+  },
+  {
+    title:'Por que esse médico me procurou — e o que aconteceu',
+    tip:'📸 Foto sua com expressão reflexiva. Esse post é uma mini-história — alta retenção.',
+    caption:`Recebi uma mensagem de um médico pediatra:
+
+"Ganho R$30k por mês há 3 anos mas tenho menos de R$50k guardado. Algo está errado."
+
+Algo estava, sim.
+
+Trabalhamos juntos durante 8 meses.
+Hoje ele tem mais de R$200k investidos com estratégia clara.
+
+Não foi mágica.
+Foi método, disciplina e a orientação certa.
+
+O salário não mudou. A estratégia sim.
+
+Você se identifica com esse médico?`,
+    tags:'#casodesucess #médico #patrimônio #consultorfinanceiro'
+  }
+],
+7:[
+  {
+    title:'Domingo — presença leve nos stories',
+    tip:'📱 Nenhum post de feed hoje. Stories leve e pessoal.',
+    script:[
+      {tag:'Opção A', txt:'Foto do que você está fazendo — família, lazer, descanso. Legenda curta e informal.'},
+      {tag:'Opção B', txt:'Uma frase que te marcou na semana. Use o sticker de música + citação.'},
+      {tag:'Opção C', txt:'Enquete leve sem relação com finanças: "Café ou academia domingo?"'},
+      {tag:'Opção D', txt:'Repost de algo que você leu e gostou, com sua opinião curta.'},
+      {tag:'Lembrete', txt:'Domingo é para humanizar o perfil. Médicos seguem médicos — eles querem ver que você tem vida além do trabalho.'}
+    ],
+    caption:`(Sem feed hoje — apenas stories informais e leves)`,
+    tags:'(sem hashtags no domingo)'
+  }
+]
+};
+
+// ═══════════════════════════════
+// STATE
+// ═══════════════════════════════
+const NOW = new Date();
+let calYear = NOW.getFullYear();
+let calMonth = NOW.getMonth();
+const posted = new Set(JSON.parse(localStorage.getItem('cc2_posted')||'[]'));
+function savePosted(){ localStorage.setItem('cc2_posted',JSON.stringify([...posted])); }
+function dkey(y,m,d){ return `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`; }
+function typeId(day){ return ((day-1)%7)+1; }
+function getType(day){ return TYPES[typeId(day)-1]; }
+function getPost(tid,idx){ const p=POSTS[tid]||[]; return p[idx%p.length]; }
+function todayPost(){ return getPost(typeId(NOW.getDate()),0); }
+let modalDay=null;
+
+// rotation state per day (which post index)
+const rotState = JSON.parse(localStorage.getItem('cc2_rot')||'{}');
+function saveRot(){ localStorage.setItem('cc2_rot',JSON.stringify(rotState)); }
+function getRotIdx(dayKey){ return rotState[dayKey]||0; }
+function nextRot(dayKey,typeId){
+  const len=(POSTS[typeId]||[]).length;
+  rotState[dayKey]=((getRotIdx(dayKey)+1)%len);
+  saveRot();
+}
+
+// active content tab per section
+let hojeCTab='tip';
+let genCTab='tip';
+let genSelType=null;
+let genSelPost=null;
+
+// ═══════════════════════════════
+// NAV
+// ═══════════════════════════════
+function go(id,btn){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.navbtn').forEach(b=>b.classList.remove('on'));
+  document.getElementById('s-'+id).classList.add('on');
+  btn.classList.add('on');
+  if(id==='hoje') buildHoje();
+  if(id==='semana') buildSemana();
+  if(id==='gerar') buildGerar();
+  if(id==='cal') buildCal();
+  if(id==='guia') buildGuia();
+}
+
+// ═══════════════════════════════
+// HOJE
+// ═══════════════════════════════
+function buildHoje(){
+  const d=NOW.getDate();
+  const tid=typeId(d);
+  const type=getType(d);
+  const c=hex(tid);
+  const dk=dkey(NOW.getFullYear(),NOW.getMonth(),d);
+  const pidx=getRotIdx(dk);
+  const post=getPost(tid,pidx);
+  const isDone=posted.has(dk);
+
+  const wday=NOW.toLocaleDateString('pt-BR',{weekday:'long'});
+  const dstr=NOW.toLocaleDateString('pt-BR',{day:'numeric',month:'long',year:'numeric'});
+
+  const verbMap={
+    'Foto':'postar uma foto',
+    'Foto + Texto':'postar uma foto',
+    'Carrossel':'criar um carrossel',
+    'Reels / Foto':'gravar um Reels',
+    'Stories':'postar nos stories'
+  };
+  const verb=verbMap[post.fmt||type.fmt]||'postar';
+
+  document.getElementById('s-hoje').innerHTML=`
+    <div class="today-card" style="background:${c}15;border:1px solid ${c}30">
+      <div class="today-badge" style="color:${c}">
+        <div class="pulse" style="background:${c}"></div>
+        ${isDone?'JÁ POSTADO HOJE':'POST DE HOJE'}
+      </div>
+      <div class="today-h">Davi, ${type.time?`às ${type.time}`:'hoje'} você vai<br>${verb} sobre:</div>
+      <div class="today-sub">"${post.title}"</div>
+      ${type.time?`<div class="time-badge" style="border-color:${c}40">🕐 <strong>${type.time}</strong> &nbsp;·&nbsp; ${type.emoji} ${type.name} &nbsp;·&nbsp; ${type.fmt}</div>`:''}
+
+      <div class="ctabs" id="hojeTabs">${buildCTabs(post,c,'hoje')}</div>
+      <div class="content-area" id="hojeContent">${buildCContent(post,c,'hoje',hojeCTab)}</div>
+
+      <div class="actions">
+        <button class="abtn abtn-copy" onclick="copyText('hojeContent')">📋 Copiar</button>
+        <button class="abtn abtn-next" onclick="hojeNextPost(${d},${tid},'${dk}')">🔄 Outro post</button>
+        ${isDone
+          ?`<button class="abtn abtn-undo" onclick="togglePostedHoje(${d},'${dk}')">↩ Desmarcar</button>`
+          :`<button class="abtn abtn-done" onclick="togglePostedHoje(${d},'${dk}')">✓ Marcar como postado</button>`
+        }
+      </div>
+      ${isDone?`<div class="done-check">✅ Postado! Excelente consistência, Davi.</div>`:''}
+    </div>
+  `;
+}
+
+function buildCTabs(post,c,prefix){
+  const tabs=[];
+  tabs.push({id:'tip',label:'💡 Dica'});
+  if(post.slides) tabs.push({id:'slides',label:'🗂️ Slides'});
+  if(post.script) tabs.push({id:'script',label:'🎬 Roteiro'});
+  tabs.push({id:'caption',label:'✍️ Legenda'});
+  tabs.push({id:'tags',label:'# Tags'});
+  const active=prefix==='hoje'?hojeCTab:genCTab;
+  return tabs.map(t=>`<button class="ctab ${active===t.id?'on':''}"
+    style="${active===t.id?`background:${c}30;color:${c}`:''}"
+    onclick="setCTab('${prefix}','${t.id}','${c}')">${t.label}</button>`).join('');
+}
+
+function buildCContent(post,c,prefix,tab){
+  if(tab==='tip'){
+    return `<div class="tip-box"><strong>💡 Como produzir:</strong><br><br>${(post.tip||'Crie um conteúdo visual de qualidade alinhado ao tema.').replace(/\n/g,'<br>')}</div>`;
+  }
+  if(tab==='slides'&&post.slides){
+    return `<div class="slide-list">${post.slides.map(s=>`
+      <div class="slide-row" style="border-color:${c}">
+        <div class="slide-num" style="color:${c}">${s.num}</div>
+        <div class="slide-txt">${s.txt.replace(/\n/g,'<br>')}</div>
+      </div>`).join('')}</div>`;
+  }
+  if(tab==='script'&&post.script){
+    return `<div class="script-block">${post.script.map(s=>`
+      <div class="script-row">
+        <span class="stag" style="background:${c}20;color:${c}">${s.tag}</span>
+        <span class="stxt">${s.txt}</span>
+      </div>`).join('')}</div>`;
+  }
+  if(tab==='caption'){
+    return `<pre>${post.caption}</pre>`;
+  }
+  if(tab==='tags'){
+    return `<div class="tags-area">${post.tags}</div>`;
+  }
+  return `<pre>${post.caption}</pre>`;
+}
+
+function setCTab(prefix,tab,c){
+  if(prefix==='hoje') hojeCTab=tab;
+  else genCTab=tab;
+  const post=prefix==='hoje'?getPost(typeId(NOW.getDate()),getRotIdx(dkey(NOW.getFullYear(),NOW.getMonth(),NOW.getDate()))):genSelPost;
+  if(!post) return;
+  document.getElementById(prefix+'Tabs').innerHTML=buildCTabs(post,c,prefix);
+  document.getElementById(prefix+'Content').innerHTML=buildCContent(post,c,prefix,tab);
+}
+
+function copyText(id){
+  const el=document.getElementById(id);
+  if(!el) return;
+  navigator.clipboard.writeText(el.innerText.replace(/^[💡🗂️🎬✍️#]\s.*\n\n/,''))
+    .then(()=>toast('Copiado! 📋'));
+}
+
+function togglePostedHoje(day,dk){
+  if(posted.has(dk)){ posted.delete(dk); toast('Desmarcado'); }
+  else{ posted.add(dk); toast('Postado! 🔥 Mais um dia de consistência.'); }
+  savePosted();
+  buildHoje();
+}
+
+function hojeNextPost(day,tid,dk){
+  nextRot(dk,tid);
+  hojeCTab='tip';
+  buildHoje();
+  toast('Próximo post carregado! 🔄');
+}
+
+// ═══════════════════════════════
+// SEMANA
+// ═══════════════════════════════
+function buildSemana(){
+  const today=NOW.getDate();
+  const yr=NOW.getFullYear();
+  const mo=NOW.getMonth();
+  // Find start of current week (Monday)
+  const dow=(NOW.getDay()+6)%7; // 0=Mon
+  let html='';
+  for(let i=0;i<7;i++){
+    const d=new Date(yr,mo,today-dow+i);
+    const dd=d.getDate();
+    const dm=d.getMonth();
+    const dy=d.getFullYear();
+    const isT=(dd===today&&dm===mo&&dy===yr);
+    const dk=dkey(dy,dm,dd);
+    const tid=typeId(dd);
+    const type=getType(dd);
+    const post=getPost(tid,getRotIdx(dk));
+    const isDone=posted.has(dk);
+    const c=hex(tid);
+    const wn=d.toLocaleDateString('pt-BR',{weekday:'short'}).replace('.','').toUpperCase();
+    html+=`
+    <div class="week-card ${isT?'today-wk':''}" style="border-left:3px solid ${c}">
+      <div class="wk-head" onclick="toggleWeekCard(${i})">
+        <div class="wk-day">
+          <div class="dn">${wn}</div>
+          <div class="dd" style="color:${c}">${dd}</div>
+        </div>
+        <div class="wk-info">
+          <div class="wk-type" style="color:${c}">${type.emoji} ${type.name}</div>
+          <div class="wk-title">${post.title}</div>
+        </div>
+        <div class="wk-right">
+          ${type.time?`<div class="wk-time">🕐 ${type.time}</div>`:''}
+          ${isDone?`<div class="wk-check">✓</div>`:''}
+          <div class="wk-arrow" id="wa-${i}">›</div>
+        </div>
+      </div>
+      <div class="wk-body" id="wb-${i}">
+        <div class="ctabs">${buildCTabsMini(post,c,i)}</div>
+        <div class="content-area" id="wc-${i}">${buildCContent(post,c,'wk'+i,'tip')}</div>
+        <div class="actions" style="margin-top:12px">
+          <button class="abtn abtn-copy" onclick="copyText('wc-${i}')">📋 Copiar</button>
+          ${isDone
+            ?`<button class="abtn abtn-undo" onclick="toggleWeekPosted(${dd},${dm},${dy},'${dk}',${i})">↩ Desmarcar</button>`
+            :`<button class="abtn abtn-done" onclick="toggleWeekPosted(${dd},${dm},${dy},'${dk}',${i})">✓ Postado</button>`
+          }
+        </div>
+      </div>
+    </div>`;
+  }
+  document.getElementById('weekGrid').innerHTML=html;
+}
+
+let wkTabs={};
+function buildCTabsMini(post,c,i){
+  const prefix='wk'+i;
+  const tabs=[{id:'tip',label:'💡'}];
+  if(post.slides) tabs.push({id:'slides',label:'🗂️'});
+  if(post.script) tabs.push({id:'script',label:'🎬'});
+  tabs.push({id:'caption',label:'✍️ Legenda'});
+  tabs.push({id:'tags',label:'# Tags'});
+  const active=wkTabs[i]||'tip';
+  return tabs.map(t=>`<button class="ctab ${active===t.id?'on':''}"
+    style="${active===t.id?`background:${c}30;color:${c}`:''}"
+    onclick="setWkTab(${i},'${t.id}','${c}')">${t.label}</button>`).join('');
+}
+
+function setWkTab(i,tab,c){
+  const d=new Date(); const today=d.getDate();
+  // Recalculate day for this card
+  const dow=(NOW.getDay()+6)%7;
+  const cd=new Date(NOW.getFullYear(),NOW.getMonth(),today-dow+i);
+  const tid=typeId(cd.getDate());
+  const dk=dkey(cd.getFullYear(),cd.getMonth(),cd.getDate());
+  const post=getPost(tid,getRotIdx(dk));
+  wkTabs[i]=tab;
+  const prefix='wk'+i;
+  document.getElementById('wc-'+i).innerHTML=buildCContent(post,c,prefix,tab);
+  // rebuild tabs
+  const wc=document.getElementById('wb-'+i);
+  if(wc) wc.querySelector('.ctabs').innerHTML=buildCTabsMini(post,c,i);
+}
+
+let openWeekCard=null;
+function toggleWeekCard(i){
+  const body=document.getElementById('wb-'+i);
+  const arrow=document.getElementById('wa-'+i);
+  if(openWeekCard!==null&&openWeekCard!==i){
+    const ob=document.getElementById('wb-'+openWeekCard);
+    const oa=document.getElementById('wa-'+openWeekCard);
+    if(ob)ob.classList.remove('open');
+    if(oa)oa.textContent='›';
+  }
+  const isOpen=body.classList.toggle('open');
+  arrow.textContent=isOpen?'⌄':'›';
+  openWeekCard=isOpen?i:null;
+}
+
+function toggleWeekPosted(dd,dm,dy,dk,i){
+  if(posted.has(dk)){ posted.delete(dk); toast('Desmarcado'); }
+  else{ posted.add(dk); toast('Postado! ✅'); }
+  savePosted();
+  buildSemana();
+}
+
+// ═══════════════════════════════
+// GERAR
+// ═══════════════════════════════
+function buildGerar(){
+  let html='';
+  TYPES.forEach(t=>{
+    const c=hex(t.id);
+    html+=`<button class="gen-type-btn" id="gbt-${t.id}"
+      style="background:${c}15;border:1px solid ${c}30"
+      onclick="genSelect(${t.id})">
+      <span class="icon">${t.emoji}</span>
+      <span class="label">${t.name}</span>
+    </button>`;
+  });
+  document.getElementById('genTypes').innerHTML=html;
+  document.getElementById('genResult').className='gen-result hidden';
+}
+
+function genSelect(tid){
+  genSelType=tid;
+  genCTab='tip';
+  const c=hex(tid);
+  document.querySelectorAll('.gen-type-btn').forEach(b=>{
+    b.style.borderColor=b.id===`gbt-${tid}`?c:hex(parseInt(b.id.split('-')[1]))+'30';
+    b.classList.toggle('sel',b.id===`gbt-${tid}`);
+  });
+  const posts=POSTS[tid]||[];
+  const idx=Math.floor(Math.random()*posts.length);
+  genSelPost=posts[idx];
+  const type=TYPES[tid-1];
+  const res=document.getElementById('genResult');
+  res.className='gen-result';
+  res.innerHTML=`
+    <div class="gen-result-head">
+      <span class="gen-result-head type-pill" style="background:${c}20;color:${c}">${type.emoji} ${type.name}</span>
+      <span class="gen-result-head fmt">${type.fmt}</span>
+    </div>
+    <div class="gen-result-title">${genSelPost.title}</div>
+    <div class="ctabs" id="genTabs">${buildCTabs(genSelPost,c,'gen')}</div>
+    <div class="content-area" id="genContent">${buildCContent(genSelPost,c,'gen',genCTab)}</div>
+    <div class="actions" style="margin-top:14px">
+      <button class="abtn abtn-copy" onclick="copyText('genContent')">📋 Copiar</button>
+      <button class="abtn abtn-next" onclick="genNext(${tid})">🔄 Gerar outro</button>
+    </div>
+  `;
+}
+
+let genIdx={};
+function genNext(tid){
+  const posts=POSTS[tid]||[];
+  genIdx[tid]=((genIdx[tid]||0)+1)%posts.length;
+  genSelPost=posts[genIdx[tid]];
+  genCTab='tip';
+  genSelect(tid);
+  toast('Novo post gerado! 🔄');
+}
+
+// ═══════════════════════════════
+// CALENDAR
+// ═══════════════════════════════
+function buildCal(){
+  const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+  document.getElementById('calTitle').textContent=
+    cap(new Date(calYear,calMonth,1).toLocaleDateString('pt-BR',{month:'long',year:'numeric'}));
+
+  const dim=new Date(calYear,calMonth+1,0).getDate();
+  let cnt=0;
+  for(let d=1;d<=dim;d++) if(posted.has(dkey(calYear,calMonth,d))) cnt++;
+
+  document.getElementById('calStats').innerHTML=`
+    <div class="cal-stat"><div class="v">${cnt}</div><div class="l">Postados</div></div>
+    <div class="cal-stat"><div class="v">${dim-cnt}</div><div class="l">Restantes</div></div>
+    <div class="cal-stat"><div class="v">${dim}</div><div class="l">Total mês</div></div>
+    <div class="cal-stat"><div class="v">${Math.round(dim/7)}</div><div class="l">Por semana</div></div>
+  `;
+
+  const first=(new Date(calYear,calMonth,1).getDay()+6)%7;
+  let grid='';
+  ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'].forEach(d=>{grid+=`<div class="cal-dh">${d}</div>`;});
+  for(let i=0;i<first;i++) grid+=`<div class="cal-dc empty"></div>`;
+
+  for(let d=1;d<=dim;d++){
+    const tid=typeId(d);
+    const type=getType(d);
+    const c=hex(tid);
+    const k=dkey(calYear,calMonth,d);
+    const isDone=posted.has(k);
+    const isT=calYear===NOW.getFullYear()&&calMonth===NOW.getMonth()&&d===NOW.getDate();
+    grid+=`<div class="cal-dc ${isDone?'is-posted':''} ${isT?'is-today':''}"
+      onclick="openCalDay(${d})"
+      style="border-left:3px solid ${c}">
+      <div class="cdn">${d}</div>
+      <span class="cpill" style="background:${c}20;color:${c}">${type.short}</span>
+      <span class="cico">${type.emoji}</span>
+    </div>`;
+  }
+  document.getElementById('calGrid').innerHTML=grid;
+
+  let leg='';
+  TYPES.forEach(t=>{
+    leg+=`<div class="leg"><div class="leg-dot" style="background:${hex(t.id)}"></div>${t.emoji} ${t.name}</div>`;
+  });
+  document.getElementById('calLegend').innerHTML=leg;
+}
+
+function calNav(d){
+  calMonth+=d;
+  if(calMonth>11){calMonth=0;calYear++;}
+  if(calMonth<0){calMonth=11;calYear--;}
+  buildCal();
+}
+
+function openCalDay(day){
+  modalDay=day;
+  const tid=typeId(day);
+  const type=getType(day);
+  const c=hex(tid);
+  const dk=dkey(calYear,calMonth,day);
+  const pidx=getRotIdx(dk);
+  const post=getPost(tid,pidx);
+  const isDone=posted.has(dk);
+  const dayStr=new Date(calYear,calMonth,day).toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'});
+
+  document.getElementById('mTitle').innerHTML=`<span style="color:${c}">${type.emoji} ${type.name}</span>`;
+  document.getElementById('mSub').textContent=`${dayStr}${type.time?' · '+type.time:''}`;
+
+  let body=`<div class="ctabs">${buildCTabs(post,c,'mod')}</div>
+    <div class="content-area" id="modContent">${buildCContent(post,c,'mod','tip')}</div>`;
+  document.getElementById('mBody').innerHTML=body;
+
+  const btn=document.getElementById('mDoneBtn');
+  btn.textContent=isDone?'↩ Desmarcar':'✓ Marcar postado';
+  btn.className=isDone?'abtn abtn-undo':'abtn abtn-done';
+  btn.style.display='';
+
+  document.getElementById('moverlay').classList.add('open');
+}
+
+// override setCTab for modal
+const _setCTab=setCTab;
+window.setCTab=function(prefix,tab,c){
+  if(prefix==='mod'){
+    const post=getPost(typeId(modalDay),getRotIdx(dkey(calYear,calMonth,modalDay)));
+    document.getElementById('modContent').innerHTML=buildCContent(post,c,prefix,tab);
+    document.getElementById('moverlay').querySelector('.ctabs').innerHTML=buildCTabs(post,c,'mod');
+    // update active tab style
+    document.getElementById('moverlay').querySelectorAll('.ctab').forEach(b=>{
+      const isOn=b.getAttribute('onclick').includes(`'${tab}'`);
+      b.classList.toggle('on',isOn);
+      b.style.background=isOn?c+'30':'';
+      b.style.color=isOn?c:'';
+    });
+  } else {
+    _setCTab(prefix,tab,c);
+  }
+};
+
+function mTogglePosted(){
+  if(modalDay===null) return;
+  const dk=dkey(calYear,calMonth,modalDay);
+  if(posted.has(dk)){ posted.delete(dk); toast('Desmarcado'); }
+  else{ posted.add(dk); toast('Postado! ✅'); }
+  savePosted();
+  buildCal();
+  openCalDay(modalDay);
+}
+
+function closeMov(e){
+  if(!e||e.target===document.getElementById('moverlay')){
+    document.getElementById('moverlay').classList.remove('open');
+  }
+}
+
+// ═══════════════════════════════
+// GUIDE
+// ═══════════════════════════════
+function buildGuia(){
+  document.getElementById('guideGrid').innerHTML=`
+    <div class="gcard">
+      <div class="gi">🧠</div>
+      <h3>Os 3 Sinais que o Algoritmo Prioriza</h3>
+      <p>O Instagram mede valor por 3 ações nesta ordem:</p>
+      <ul class="glist">
+        <li><span class="gb">1.</span><strong>DMs e compartilhamentos</strong> — alguém mandou seu post para outra pessoa. Sinal mais forte.</li>
+        <li><span class="gb">2.</span><strong>Saves</strong> — indica que vale revisitar. Carrosseis geram 3-5x mais saves.</li>
+        <li><span class="gb">3.</span><strong>Watch time</strong> — em Reels, retenção >70% = alcance expandido.</li>
+        <li><span class="gb">+</span>Curtidas importam menos do que os três acima.</li>
+      </ul>
+      <div class="gstat"><div class="gsn">60'</div><div class="gsl">minutos críticos — posts que engajam bem nos primeiros 60min recebem 3-5x mais distribuição.</div></div>
+    </div>
+    <div class="gcard">
+      <div class="gi">🎯</div>
+      <h3>A Regra 4-1-1</h3>
+      <p>Para não saturar com vendas — proporção ideal:</p>
+      <ul class="glist">
+        <li><span class="gb">4x</span>Educa, entretém ou aspira — sem CTA de venda. (Lifestyle + Engaj. + Educação + Bastidores)</li>
+        <li><span class="gb">1x</span>Posicionamento suave — quem você é.</li>
+        <li><span class="gb">1x</span>CTA direto — convite para DM. (Prova Social)</li>
+      </ul>
+    </div>
+    <div class="gcard">
+      <div class="gi">📊</div>
+      <h3>Formatos por Objetivo</h3>
+      <ul class="glist">
+        <li><span class="gb">🗂️</span><strong>Carrossel:</strong> maior save rate. Algoritmo mostra o mesmo carrossel múltiplas vezes. Use para educação.</li>
+        <li><span class="gb">🎬</span><strong>Reels:</strong> maior alcance para novos seguidores. Primeiros 3s definem tudo.</li>
+        <li><span class="gb">📷</span><strong>Foto:</strong> melhor para lifestyle e bastidores. Precisa de legenda forte.</li>
+        <li><span class="gb">📱</span><strong>Stories:</strong> só para quem já te segue. Mantém relacionamento.</li>
+      </ul>
+    </div>
+    <div class="gcard">
+      <div class="gi">🕐</div>
+      <h3>Melhores Horários para Médicos</h3>
+      <ul class="glist">
+        <li><span class="gb">Seg</span>18:30 — início de semana, pessoas motivadas.</li>
+        <li><span class="gb">Ter</span>12:00 — pico de almoço, alto volume.</li>
+        <li><span class="gb">Qua</span>18:00 — melhor dia da semana para alcance.</li>
+        <li><span class="gb">Qui</span>07:30 — médicos leem de manhã antes do expediente.</li>
+        <li><span class="gb">Sex</span>11:00 — energia pré-fim de semana.</li>
+        <li><span class="gb">Sáb</span>09:30 — manhã de sábado tem alto engajamento.</li>
+      </ul>
+    </div>
+    <div class="gcard">
+      <div class="gi">🏥</div>
+      <h3>Psicologia do Nicho Médico</h3>
+      <ul class="glist">
+        <li><span class="gb">🔬</span><strong>São racionais:</strong> use dados. Opiniões sem embasamento não vendem.</li>
+        <li><span class="gb">⏰</span><strong>Sem tempo:</strong> conteúdo direto. Bullet points > parágrafos.</li>
+        <li><span class="gb">🧠</span><strong>Ego profissional:</strong> fale como par, não como professor.</li>
+        <li><span class="gb">😰</span><strong>Aversão a perda:</strong> "você está perdendo X" converte mais que "você pode ganhar X".</li>
+        <li><span class="gb">🤝</span><strong>Confiança antes de venda:</strong> médicos indicam médicos.</li>
+      </ul>
+    </div>
+    <div class="gcard">
+      <div class="gi">🪜</div>
+      <h3>Escada de Confiança</h3>
+      <div class="ladder">
+        <div class="lrung"><div class="lrn">1</div><div class="lrt"><strong>Alcance</strong><span>Reels com gancho forte nos primeiros 3s.</span></div></div>
+        <div class="lrung"><div class="lrn">2</div><div class="lrt"><strong>Atenção</strong><span>Slide 1 do carrossel precisa ser irresistível.</span></div></div>
+        <div class="lrung"><div class="lrn">3</div><div class="lrt"><strong>Interesse</strong><span>Salvam e seguem. Conteúdo específico para médicos.</span></div></div>
+        <div class="lrung"><div class="lrn">4</div><div class="lrt"><strong>Confiança</strong><span>Comentam e recomendam. Bastidores e prova social.</span></div></div>
+        <div class="lrung"><div class="lrn">5</div><div class="lrt"><strong>Conversão</strong><span>Mandam DM. CTA claro e sem pressão.</span></div></div>
+      </div>
+    </div>
+    <div class="gcard">
+      <div class="gi">📏</div>
+      <h3>Métricas que Importam</h3>
+      <ul class="glist">
+        <li><span class="gb">💾</span><strong>Save rate:</strong> >3% = bom | >8% = excelente.</li>
+        <li><span class="gb">📤</span><strong>Compartilhamento:</strong> >1% = bom. Sinal mais forte.</li>
+        <li><span class="gb">💬</span><strong>Engajamento:</strong> >2% em nicho financeiro = saudável.</li>
+        <li><span class="gb">📩</span><strong>DMs/semana:</strong> o indicador real do seu pipeline.</li>
+      </ul>
+      <div class="gstat"><div class="gsn">12</div><div class="gsl">posts mínimos antes de julgar se um tipo funciona. Não mude antes de ter dados.</div></div>
+    </div>
+    <div class="gcard">
+      <div class="gi">✍️</div>
+      <h3>Anatomia do Post Perfeito</h3>
+      <ul class="glist">
+        <li><span class="gb">1.</span><strong>Gancho:</strong> Para o scroll. Curiosidade ou identificação em <8 palavras.</li>
+        <li><span class="gb">2.</span><strong>Agitação:</strong> Apresente o problema. "Isso sou eu."</li>
+        <li><span class="gb">3.</span><strong>Valor:</strong> Entregue o que prometeu. Dados > opiniões.</li>
+        <li><span class="gb">4.</span><strong>CTA:</strong> Uma ação só — "Salva", "Comenta" ou "DM".</li>
+        <li><span class="gb">✂️</span>150-300 palavras supera textos longos em nichos profissionais.</li>
+      </ul>
+    </div>
+  `;
+}
+
+// ═══════════════════════════════
+// TOAST
+// ═══════════════════════════════
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+// ═══════════════════════════════
+// KEYBOARD
+// ═══════════════════════════════
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape') closeMov({target:null});
+});
+
+// ═══════════════════════════════
+// INIT
+// ═══════════════════════════════
+buildHoje();
+</script>
+</body>
+</html>
