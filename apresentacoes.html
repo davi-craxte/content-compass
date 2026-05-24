@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apresentações · Davi Cardoso</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#080810;color:#e8e8f0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;min-height:100vh}
+
+/* NAV */
+.topbar{background:#0f0f18;border-bottom:1px solid #1e1e2e;padding:14px 24px;display:flex;align-items:center;gap:16px}
+.topbar a{color:#7c6af7;text-decoration:none;font-size:13px;display:flex;align-items:center;gap:4px}
+.topbar a:hover{color:#a78bfa}
+.topbar h1{font-size:16px;font-weight:700;flex:1;text-align:center}
+.topbar .hint{font-size:11px;color:#555;background:#1a1a2a;padding:5px 12px;border-radius:20px}
+
+/* GALLERY */
+.gallery{padding:28px 24px;max-width:1000px;margin:0 auto}
+.gallery-title{font-size:14px;font-weight:600;color:#555;text-transform:uppercase;letter-spacing:.8px;margin-bottom:20px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.gcard{background:#0f0f18;border:1px solid #1e1e2e;border-radius:14px;overflow:hidden;cursor:pointer;transition:.2s}
+.gcard:hover{border-color:rgba(255,255,255,.15);transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,.4)}
+.gcard-thumb{height:150px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.gcard-thumb .big-num{font-size:64px;font-weight:900;opacity:.12;position:absolute}
+.gcard-thumb .thumb-content{text-align:center;padding:16px;z-index:1}
+.gcard-thumb .thumb-icon{font-size:32px;margin-bottom:8px;display:block}
+.gcard-thumb .thumb-title{font-size:13px;font-weight:700;line-height:1.4;color:#fff}
+.gcard-body{padding:14px}
+.gcard-type{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.gcard-name{font-size:13px;font-weight:600;line-height:1.4;margin-bottom:10px;color:#ccc}
+.gcard-meta{display:flex;align-items:center;justify-content:space-between}
+.gcard-slides{font-size:11px;color:#555}
+.gcard-btn{font-size:11px;font-weight:700;padding:5px 12px;border-radius:6px;border:none;cursor:pointer;transition:.15s}
+
+/* VIEWER */
+.viewer{display:none;position:fixed;inset:0;background:#050508;z-index:100;flex-direction:column}
+.viewer.open{display:flex}
+.viewer-top{padding:12px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #1a1a24;flex-shrink:0}
+.viewer-top .back{background:#1a1a24;border:1px solid #2a2a38;color:#888;padding:7px 14px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;transition:.15s}
+.viewer-top .back:hover{color:#e8e8f0}
+.viewer-top .vtitle{font-size:14px;font-weight:700;flex:1}
+.viewer-top .vcounter{font-size:13px;color:#555;background:#1a1a24;padding:6px 14px;border-radius:8px;font-weight:600}
+.viewer-top .vhint{font-size:11px;color:#444;padding:6px 12px;background:#111;border-radius:8px;display:flex;align-items:center;gap:5px}
+
+/* SLIDE AREA */
+.slide-area{flex:1;display:flex;align-items:center;justify-content:center;padding:20px;overflow:hidden;position:relative}
+.slide-wrap{position:relative;width:min(560px,calc(100vmin - 120px));height:min(560px,calc(100vmin - 120px))}
+.slide{position:absolute;inset:0;border-radius:16px;overflow:hidden;display:none;flex-direction:column;justify-content:space-between;padding:36px;opacity:0;transition:opacity .25s}
+.slide.active{display:flex;opacity:1}
+
+/* SLIDE INNER LAYOUTS */
+.s-cover{background:linear-gradient(145deg,#0a0a14 0%,#12121f 100%)}
+.s-middle{background:linear-gradient(145deg,#0a0a14 0%,#11111c 100%)}
+.s-cta{background:linear-gradient(145deg,#0c0c18 0%,#14141f 100%)}
+
+.s-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:auto}
+.s-num{font-size:11px;font-weight:700;opacity:.3;letter-spacing:.5px}
+.s-tag{font-size:10px;font-weight:700;padding:3px 10px;border-radius:4px;letter-spacing:.4px;text-transform:uppercase}
+
+.s-body{flex:1;display:flex;flex-direction:column;justify-content:center;padding:8px 0}
+.s-eyebrow{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;opacity:.5;margin-bottom:14px}
+.s-title{font-size:clamp(22px,5vmin,32px);font-weight:900;line-height:1.15;margin-bottom:14px;letter-spacing:-.5px}
+.s-title em{font-style:normal}
+.s-text{font-size:clamp(14px,3vmin,17px);line-height:1.7;color:rgba(255,255,255,.7)}
+.s-text strong{color:#fff;font-weight:700}
+.s-list{list-style:none;display:flex;flex-direction:column;gap:10px}
+.s-list li{display:flex;align-items:flex-start;gap:10px;font-size:clamp(13px,2.8vmin,16px);line-height:1.5;color:rgba(255,255,255,.75)}
+.s-list li .icon{flex-shrink:0;font-size:16px;margin-top:1px}
+.s-divider{width:40px;height:3px;border-radius:2px;margin:16px 0}
+.s-big{font-size:clamp(40px,10vmin,72px);font-weight:900;letter-spacing:-2px;line-height:1}
+.s-big-sub{font-size:clamp(14px,3vmin,17px);color:rgba(255,255,255,.5);margin-top:6px}
+.s-versus{display:flex;flex-direction:column;gap:8px}
+.s-vs-row{background:rgba(255,255,255,.04);border-radius:10px;padding:12px 14px;display:flex;align-items:flex-start;gap:10px;font-size:clamp(12px,2.5vmin,15px);line-height:1.5}
+.s-vs-icon{flex-shrink:0;font-size:18px}
+.s-highlight{background:rgba(255,255,255,.06);border-radius:12px;padding:16px;margin-top:8px;font-size:clamp(13px,2.8vmin,16px);line-height:1.6;color:rgba(255,255,255,.8)}
+.s-accent-line{border-left:3px solid;padding-left:14px}
+
+.s-footer{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:16px;border-top:1px solid rgba(255,255,255,.06)}
+.s-handle{font-size:11px;font-weight:700;opacity:.4;letter-spacing:.3px}
+.s-brand{font-size:11px;font-weight:700;opacity:.35;letter-spacing:.3px}
+.s-dots{display:flex;gap:5px}
+.s-dot{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.2);transition:.2s}
+.s-dot.on{background:rgba(255,255,255,.6);width:14px;border-radius:3px}
+
+/* NAV ARROWS */
+.nav-arrow{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.5);width:44px;height:44px;border-radius:50%;cursor:pointer;font-size:20px;display:flex;align-items:center;justify-content:center;transition:.2s;z-index:10;border:none}
+.nav-arrow:hover{background:rgba(255,255,255,.15);color:#fff}
+.nav-prev{left:-52px}
+.nav-next{right:-52px}
+@media(max-width:700px){.nav-prev{left:-44px}.nav-next{right:-44px}}
+.nav-arrow:disabled{opacity:.2;cursor:default}
+
+/* VIEWER BOTTOM */
+.viewer-bot{padding:14px 20px;border-top:1px solid #1a1a24;display:flex;align-items:center;justify-content:center;gap:8px;flex-shrink:0}
+.vdot{width:7px;height:7px;border-radius:50%;background:#2a2a38;cursor:pointer;transition:.2s}
+.vdot.on{background:#7c6af7;width:18px;border-radius:4px}
+
+/* SCREENSHOT TIP */
+.screenshot-tip{position:fixed;bottom:80px;right:20px;background:#1a1a2a;border:1px solid #2a2a3e;border-radius:10px;padding:10px 14px;font-size:11px;color:#888;z-index:200;max-width:180px;line-height:1.5;text-align:center}
+.screenshot-tip strong{color:#a78bfa;display:block;margin-bottom:3px}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="index.html">← Voltar ao app</a>
+  <h1>🎨 Apresentações prontas para postar</h1>
+  <div class="hint">📸 Abra · Screenshot · Poste</div>
+</div>
+
+<div class="gallery" id="gallery">
+  <div class="gallery-title">Todos os carrosseis do mês — prontos para screenshot</div>
+  <div class="cards" id="cards"></div>
+</div>
+
+<!-- VIEWER -->
+<div class="viewer" id="viewer">
+  <div class="viewer-top">
+    <button class="back" onclick="closeViewer()">← Galeria</button>
+    <div class="vtitle" id="vtitle"></div>
+    <div class="vcounter" id="vcounter">1 / 1</div>
+    <div class="vhint">⌘+Shift+4 para screenshot</div>
+  </div>
+  <div class="slide-area">
+    <div class="slide-wrap" id="slideWrap">
+      <button class="nav-arrow nav-prev" id="prevBtn" onclick="nav(-1)">‹</button>
+      <div id="slides"></div>
+      <button class="nav-arrow nav-next" id="nextBtn" onclick="nav(1)">›</button>
+    </div>
+  </div>
+  <div class="viewer-bot" id="viewerDots"></div>
+</div>
+
+<div class="screenshot-tip" id="screenshotTip" style="display:none">
+  <strong>📸 Screenshot do slide</strong>
+  Mac: ⌘ Shift 4<br>depois arraste sobre o slide
+</div>
+
+<script>
+// ═══════════════════════════════════════
+// TODAS AS APRESENTAÇÕES
+// ═══════════════════════════════════════
+const DECKS = [
+  {
+    id: 'medicina-financas',
+    type: 'Lifestyle',
+    typeColor: '#f59e0b',
+    icon: '✨',
+    title: 'O que medicina e finanças têm em comum',
+    slides: [
+      {
+        layout: 'cover',
+        bg: 'linear-gradient(145deg,#1a1200 0%,#0f0c00 50%,#080810 100%)',
+        accent: '#f59e0b',
+        content: `
+          <div class="s-header">
+            <span class="s-tag" style="background:#f59e0b20;color:#f59e0b">✨ Lifestyle</span>
+            <span class="s-num">01 / 05</span>
+          </div>
+          <div class="s-body" style="justify-content:center;gap:0">
+            <div class="s-eyebrow" style="color:#f59e0b">uma reflexão importante</div>
+            <div class="s-title" style="font-size:clamp(26px,5.5vmin,38px)">O que medicina e finanças têm em <em style="color:#f59e0b">comum?</em></div>
+            <div class="s-divider" style="background:#f59e0b"></div>
+            <div class="s-text">A maioria dos médicos nunca parou para pensar nisso.</div>
+          </div>
+          <div class="s-footer">
+            <span class="s-handle">@DaviCardosobrr</span>
+            <div class="s-dots">
+              <div class="s-dot on"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div>
+            </div>
+            <span class="s-brand">Consultor Financeiro</span>
+          </div>`
+      },
+      {
+        layout: 'middle',
+        bg: 'linear-gradient(145deg,#120f00 0%,#0a0810 100%)',
+        accent: '#f59e0b',
+        content: `
+          <div class="s-header">
+            <span class="s-tag" style="background:#f59e0b20;color:#f59e0b">✨ Lifestyle</span>
+            <span class="s-num">02 / 05</span>
+          </div>
+          <div class="s-body">
+            <div style="font-size:52px;margin-bottom:20px">🤝</div>
+            <div class="s-title">Ambas <em style="color:#f59e0b">salvam vidas.</em></div>
+            <div class="s-divider" style="background:#f59e0b"></div>
+            <div class="s-text">Uma cuida do seu corpo.<br>A outra cuida do seu <strong>futuro.</strong></div>
+          </div>
+          <div class="s-footer">
+            <span class="s-handle">@DaviCardosobrr</span>
+            <div class="s-dots">
+              <div class="s-dot"></div><div class="s-dot on"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div>
+            </div>
+            <span class="s-brand">Consultor Financeiro</span>
+          </div>`
+      },
+      {
+        layout: 'middle',
+        bg: 'linear-gradient(145deg,#100e00 0%,#0a0810 100%)',
+        accent: '#f59e0b',
+        content: `
+          <div class="s-header">
+            <span class="s-tag" style="background:#f59e0b20;color:#f59e0b">✨ Lifestyle</span>
+            <span class="s-num">03 / 05</span>
+          </div>
+          <div class="s-body">
+            <div style="font-size:52px;margin-bottom:20px">🔬</div>
+            <div class="s-title"><em style="color:#f59e0b">Diagnóstico preciso</em> antes do tratamento.</div>
+            <div class="s-divider" style="background:#f59e0b"></div>
+            <div class="s-text">Você não opera sem exames.<br><br>Por que investiria <strong>sem planejamento?</strong></div>
+          </div>
+          <div class="s-footer">
+            <span class="s-handle">@DaviCardosobrr</span>
+            <div class="s-dots">
+              <div class="s-dot"></div><div class="s-dot"></div><div class="s-dot on"></div><div class="s-dot"></div><div class="s-dot"></div>
+            </div>
+            <span class="s-brand">Consultor Financeiro</span>
+          </div>`
+      },
+      {
+        layout: 'middle',
+        bg: 'linear-gradient(145deg,#100e00 0%,#0a0810 100%)',
+        accent: '#f59e0b',
+        content: `
+          <div class="s-header">
+            <span class="s-tag" style="background:#f59e0b20;color:#f59e0b">✨ Lifestyle</span>
+            <span class="s-num">04 / 05</span>
+          </div>
+          <div class="s-body">
+            <div style="font-size:52px;margin-bottom:20px">🛡️</div>
+            <div class="s-title"><em style="color:#f59e0b">Prevenção</em> vale mais que remédio.</div>
+            <div class="s-divider" style="background:#f59e0b"></div>
+            <div class="s-text">Riqueza construída aos poucos<br>supera <strong>grandes apostas de última hora.</strong></div>
+          </div>
+          <div class="s-footer">
+            <span class="s-handle">@DaviCardosobrr</span>
+            <div class="s-dots">
+              <div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot on"></div><div class="s-dot"></div>
+            </div>
+            <span class="s-brand">Consultor Financeiro</span>
+          </div>`
+      },
+      {
+        layout: 'cta',
+        bg: 'linear-gradient(145deg,#1a1200 0%,#0f0c00 50%,#080810 100%)',
+        accent: '#f59e0b',
+        content: `
+          <div class="s-header">
+            <span class="s-tag" style="background:#f59e0b20;color:#f59e0b">✨ Lifestyle</span>
+            <span class="s-num">05 / 05</span>
+          </div>
+          <div class="s-body" style="justify-content:center">
+            <div style="font-size:52px;margin-bottom:20px">🏆</div>
+            <div class="s-title">O <em style="color:#f59e0b">especialista</em> faz toda a diferença.</div>
+            <div class="s-divider" style="background:#f59e0b"></div>
+            <div class="s-text">Você confia sua saúde ao generalista?<br><br>Suas finanças merecem o mesmo nível de <strong>atenção especializada.</strong></div>
+            <div class="s-highlight" style="border-left:3px solid #f59e0b;margin-top:20px;font-size:13px">💬 Salva esse post — vale refletir com calma. 🔖</div>
+          </div>
+          <div class="s-footer">
+            <span class="s-handle">@DaviCardosobrr</span>
+            <div class="s-dots">
+              <div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot on"></div>
+            </div>
+            <span class="s-brand">Consultor p/ Médicos</span>
+          </div>`
+      }
+    ]
+  },
+
+  {
+    id: 'medicos-perdem-dinheiro',
+    type: 'Educação',
+    typeColor: '#10b981',
+    icon: '📊',
+    title: 'Por que médicos perdem mais dinheiro que a maioria',
+    slides: [
+      {
+        bg: 'linear-gradient(145deg,#001510 0%,#080810 100%)',
+        accent: '#10b981',
+        content: `
+          <div class="s-header">
+            <span class="s-tag" style="background:#10b98120;color:#10b981">📊 Educação</span>
+            <span class="s-num">01 / 07</span>
+          </div>
+          <div class="s-body">
+            <div class="s-eyebrow" style="color:#10b981">uma realidade que poucos falam</div>
+            <div class="s-title">Por que médicos <em style="color:#10b981">perdem mais dinheiro</em> que a maioria?</div>
+            <div class="s-divider" style="background:#10b981"></div>
+            <div class="s-text">Mesmo ganhando muito mais.</div>
+          </div>
+          <div class="s-footer">
+            <span class="s-handle">@DaviCardosobrr</span>
+            <div class="s-dots">
+              <div class="s-dot on"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div>
+            </div>
+            <span class="s-brand">Consultor Financeiro</span>
+          </div>`
+      },
+      {
+        bg: 'linear-gradient(145deg,#001210 0%,#080810 100%)',
+        accent: '#10b981',
+        content: `
+          <div class="s-header">
+            <span class="s-tag" style="background:#10b98120;color:#10b981">📊 Educação</span>
+            <span class="s-num">02 / 07</span>
+          </div>
+          <div class="s-body">
+            <div style="font-size:52px;margin-bottom:16px">🧠</div>
+            <div class="s-title">Não é falta de <em style="color:#10b981">inteligência.</em></div>
+            <div class="s-divider" style="background:#10b981"></div>
+            <div class="s-text">Médicos são entre as pessoas mais inteligentes do Brasil.<br><br>O problema está em outro lugar.</div>
+          </div>
+          <div class="s-footer">
+            <span class="s-handle">@DaviCardosobrr</span>
+            <div class="s-dots">
+              <div class="s-dot"></div><div class="s-dot on"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div>
+            </div>
+            <span class="s-brand">Consultor Financeiro</span>
+          </div>`
+      },
+      {
+        bg: 'linear-gradient(145deg,#001210 0%,#080810 100%)',
+        accent: '#10b981',
+        content: `
+          <div class="s-header">
+            <span class="s-tag" style="background:#10b98120;color:#10b981">📊 Educação</span>
+            <span class="s-num">03 / 07</span>
+          </div>
+          <div class="s-body">
+            <div style="font-size:52px;margin-bottom:16px">📈</div>
+            <div class="s-title">Armadilha #1:<br><em style="color:#10b981">Lifestyle Inflation</em></div>
+            <div class="s-divider" style="background:#10b981"></div>
+            <div class="s-text">Quando a renda sobe, o padrão de vida sobe junto.<br><br>E o que sobra para investir <strong>continua o mesmo.</strong></div>
+          </div>
+          <div class="s-footer">
+            <span class="s-handle">@DaviCardosobrr</span>
+            <div class="s-dots">
+              <div class="s-dot"></div><div class="s-dot"></div><div class="s-dot on"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div>
+            </div>
+            <span class="s-brand">Consultor Financeiro</span>
+          </div>`
+      },
+      {
+        bg: 'linear-gradient(145deg,#001210 0%,#080810 100%)',
+        accent: '#10b981',
+        content: `
+          <div class="s-header">
+            <span class="s-tag" style="background:#10b98120;color:#10b981">📊 Educação</span>
+            <span class="s-num">04 / 07</span>
+          </div>
+          <div class="s-body">
+            <div style="font-size:52px;margin-bottom:16px">⏰</div>
+            <div class="s-title">Armadilha #2:<br><em style="color:#10b981">Sem tempo para aprender</em></div>
+            <div class="s-divider" style="background:#10b981"></div>
+            <div class="s-text">Medicina ocupa 100% do tempo.<br><br>Educação financeira fica para "depois".<br><br><strong>"Depois" nunca chega.</strong></div>
+          </div>
+          <div class="s-footer">
+            <span class="s-handle">@DaviCardosobrr</span>
+            <div class="s-dots">
+              <div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot on"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div>
+            </div>
+            <span class="s-brand">Consultor Financeiro</span>
+          </div>`
+      },
+      {
+        bg: 'linear-gradient(145deg,#001210 0%,#080810 100%)',
+        accent: '#10b981',
+        content: `
+          <div class="s-header">
+            <span class="s-tag" style="background:#10b98120;color:#10b981">📊 Educação</span>
+            <span class="s-num">05 / 07</span>
+          </div>
+          <div class="s-body">
+            <div style="font-size:52px;margin-bottom:16px">💸</div>
+            <div class="s-title">Armadilha #3:<br><em style="color:#10b981">Imposto sem planejamento</em></div>
+            <div class="s-divider" style="background:#10b981"></div>
+            <div class="s-text">Pagar mais imposto do que deve é comum entre médicos.<br><br>E completamente <strong>evitável.</strong></div>
+          </div>
+          <div class="s-footer">
+            <span class="s-handle">@DaviCardosobrr</span>
+            <div class="s-dots">
+              <div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot on"></div><div class="s-dot"></div><div class="s-dot"></div>
+            </div>
+            <span class="s-brand">Consultor Financeiro</span>
+          </div>`
+      },
+      {
+        bg: 'linear-gradient(145deg,#001210 0%,#080810 100%)',
+        accent: '#10b981',
+        content: `
+          <div class="s-header">
+            <span class="s-tag" style="background:#10b98120;color:#10b981">📊 Educação</span>
+            <span class="s-num">06 / 07</span>
+          </div>
+          <div class="s-body">
+            <div style="font-size:52px;margin-bottom:16px">🏦</div>
+            <div class="s-title">Armadilha #4:<br><em style="color:#10b981">Confiar no banco</em></div>
+            <div class="s-divider" style="background:#10b981"></div>
+            <div class="s-text">O banco tem meta de produto.<br><br>O consultor independente tem<br><strong>compromisso com você.</strong></div>
+          </div>
+          <div class="s-footer">
+            <span class="s-handle">@DaviCardosobrr</span>
+            <div class="s-dots">
+              <div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot on"></div><div class="s-dot"></div>
+            </div>
+            <span class="s-brand">Consultor Financeiro</span>
+          </div>`
+      },
+      {
+        bg: 'linear-gradient(145deg,#001a14 0%,#080810 100%)',
+        accent: '#10b981',
+        content: `
+          <div class="s-header">
+            <span class="s-tag" style="background:#10b98120;color:#10b981">📊 Educação</span>
+            <span class="s-num">07 / 07</span>
+          </div>
+          <div class="s-body" style="justify-content:center">
+            <div class="s-title">A solução começa pelo <em style="color:#10b981">diagnóstico.</em></div>
+            <div class="s-divider" style="background:#10b981"></div>
+            <div class="s-text">Você já fez o seu?</div>
+            <div class="s-highlight" style="border-left:3px solid #10b981;margin-top:20px">
+              DM <strong style="color:#10b981">"DIAGNÓSTICO"</strong> e eu te ajudo a entender onde você está e para onde ir.
+            </div>
+          </div>
+          <div class="s-footer">
+            <span class="s-handle">@DaviCardosobrr</span>
+            <div class="s-dots">
+              <div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot on"></div>
+            </div>
+            <span class="s-brand">Consultor p/ Médicos</span>
+          </div>`
+      }
+    ]
+  },
+
+  {
+    id: 'pj-medico',
+    type: 'Educação',
+    typeColor: '#10b981',
+    icon: '📊',
+    title: 'PJ médico: quando compensa — e quando é armadilha',
+    slides: [
+      {
+        bg: 'linear-gradient(145deg,#001510 0%,#080810 100%)',
+        accent: '#10b981',
+        content: `
+          <div class="s-header">
+            <span class="s-tag" style="background:#10b98120;color:#10b981">📊 Educação</span>
+            <span class="s-num">01 / 07</span>
+          </div>
+          <div class="s-body">
+            <div class="s-eyebrow" style="color:#10b981">a dúvida que todo médico tem</div>
+            <div class="s-title">"Abre PJ que você vai pagar menos imposto."</div>
+            <div class="s-divider" style="background:#10b981"></div>
+            <div class="s-text"><em style="color:#10b981;font-style:normal">Verdade ou mito?</em></div>
+          </div>
+          <div class="s-footer">
+            <span class="s-handle">@DaviCardosobrr</span>
+            <div class="s-dots">
+              <div class="s-dot on"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div>
+            </div>
+            <span class="s-brand">Consultor Financeiro</span>
+          </div>`
+      },
+      {
+        bg: 'linear-gradient(145deg,#001210 0%,#080810 100%)',
+        accent: '#10b981',
+        content: `
+          <div class="s-header">
+            <span class="s-tag" style="background:#10b98120;color:#10b981">📊 Educação</span>
+            <span class="s-num">02 / 07</span>
+          </div>
+          <div class="s-body" style="justify-content:center;text-align:center">
+            <div style="font-size:64px;margin-bottom:16px">🤔</div>
+            <div class="s-title" style="font-size:clamp(30px,7vmin,52px)"><em style="color:#10b981">Depende.</em></div>
+            <div class="s-divider" style="background:#10b981;margin:16px auto"></div>
+            <div class="s-text">E quase ninguém te diz isso.</div>
+          </div>
+          <div class="s-footer">
+            <span class="s-handle">@DaviCardosobrr</span>
+            <div class="s-dots">
+              <div class="s-dot"></div><div class="s-dot on"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div>
+            </div>
+            <span class="s-brand">Consultor Financeiro</span>
+          </div>`
+      },
+      {
+        bg: 'linear-gradient(145deg,#001210 0%,#080810 100%)',
+        accent: '#10b981',
+        content: `
+          <div class="s-header">
+            <span class="s-tag" style="background:#10b98120;color:#10b981">📊 Educação</span>
+            <span class="s-num">03 / 07</span>
+          </div>
+          <div class="s-body">
+            <div class="s-eyebrow" style="color:#10b981">quando faz sentido</div>
+            <div class="s-title">PJ <em style="color:#10b981">compensa</em> quando:</div>
+            <div class="s-divider" style="background:#10b981"></div>
+            <ul class="s-list">
+              <li><span class="icon">✅</span>Faturamento acima de R$20k/mês</li>
+              <li><span class="icon">✅</span>Despesas dedutíveis relevantes</li>
+              <li><span class="icon">✅</span>Disciplina para separar pró-labore dos lucros</li>
+              <li><span class="icon">✅</span>Estrutura contábil bem organizada</li>
+            </ul>
+          </div>
+          <div class="s-footer">
+            <span class="s-handle">@DaviCardosobrr</span>
+            <div class="s-dots">
+              <div class="s-dot"></div><div class="s-dot"></div><div class="s-dot on"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div>
+            </div>
+            <span class="s-brand">Consultor Financeiro</span>
+          </div>`
+      },
+      {
+        bg: 'linear-gradient(145deg,#150800 0%,#080810 100%)',
+        accent: '#f97316',
+        content: `
+          <div class="s-header">
+            <span class="s-tag" style="background:#f9731620;color:#f97316">📊 Educação</span>
+            <span class="s-num">04 / 07</span>
+          </div>
+          <div class="s-body">
+            <div class="s-eyebrow" style="color:#f97316">cuidado com isso</div>
+            <div class="s-title">PJ <em style="color:#f97316">não compensa</em> quando:</div>
+            <div class="s-divider" style="background:#f97316"></div>
+            <ul class="s-list">
+              <li><span class="icon">❌</span>Renda ainda baixa ou instável</li>
+              <li><span class="icon">❌</span>Benefícios CLT são importantes para você</li>
+              <li><span class="icon">❌</span>Você não quer lidar com obrigações contábeis</li>
+              <li><span class="icon">❌</span>Gestão administrativa está fora do seu perfil</li>
+            </ul>
+          </div>
+          <div class="s-footer">
+            <span class="s-handle">@DaviCardosobrr</span>
+            <div class="s-dots">
+              <div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot on"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div>
+            </div>
+            <span class="s-brand">Consultor Financeiro</span>
+          </div>`
+      },
+      {
+        bg: 'linear-gradient(145deg,#001210 0%,#080810 100%)',
+        accent: '#10b981',
+        content: `
+          <div class="s-header">
+            <span class="s-tag" style="background:#10b98120;color:#10b981">📊 Educação</span>
+            <span class="s-num">05 / 07</span>
+          </div>
+          <div class="s-body">
+            <div style="font-size:52px;margin-bottom:16px">⚠️</div>
+            <div class="s-title">Atenção ao <em style="color:#10b981">regime tributário.</em></div>
+            <div class="s-divider" style="background:#10b981"></div>
+            <div class="s-text">Simples Nacional vs. Lucro Presumido.</div>
+            <div class="s-highlight" style="border-left:3px solid #f97316;margin-top:16px;color:rgba(255,255,255,.85)">
+              A escolha errada do regime pode custar<br><strong style="color:#f97316">R$15.000+ por ano</strong> desnecessariamente.
+            </div>
+          </div>
+          <div class="s-footer">
+            <span class="s-handle">@DaviCardosobrr</span>
+            <div class="s-dots">
+              <div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot on"></div><div class="s-dot"></div><div class="s-dot"></div>
+            </div>
+            <span class="s-brand">Consultor Financeiro</span>
+          </div>`
+      },
+      {
+        bg: 'linear-gradient(145deg,#001210 0%,#080810 100%)',
+        accent: '#10b981',
+        content: `
+          <div class="s-header">
+            <span class="s-tag" style="background:#10b98120;color:#10b981">📊 Educação</span>
+            <span class="s-num">06 / 07</span>
+          </div>
+          <div class="s-body" style="justify-content:center">
+            <div class="s-title">A pergunta certa não é<br>"<em style="color:#f97316">PJ ou CLT?</em>"</div>
+            <div class="s-divider" style="background:#10b981"></div>
+            <div class="s-title" style="font-size:clamp(18px,4vmin,26px)">É: qual estrutura <em style="color:#10b981">maximiza o que fica no seu bolso?</em></div>
+          </div>
+          <div class="s-footer">
+            <span class="s-handle">@DaviCardosobrr</span>
+            <div class="s-dots">
+              <div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot on"></div><div class="s-dot"></div>
+            </div>
+            <span class="s-brand">Consultor Financeiro</span>
+          </div>`
+      },
+      {
+        bg: 'linear-gradient(145deg,#001a14 0%,#080810 100%)',
+        accent: '#10b981',
+        content: `
+          <div class="s-header">
+            <span class="s-tag" style="background:#10b98120;color:#10b981">📊 Educação</span>
+            <span class="s-num">07 / 07</span>
+          </div>
+          <div class="s-body" style="justify-content:center">
+            <div class="s-title">Quer saber o que é melhor para <em style="color:#10b981">o SEU caso?</em></div>
+            <div class="s-divider" style="background:#10b981"></div>
+            <div class="s-highlight" style="border-left:3px solid #10b981;font-size:15px">
+              DM <strong style="color:#10b981">"PJ"</strong> aqui e eu analiso a sua situação específica.<br><br>Cada caso é único.
+            </div>
+          </div>
+          <div class="s-footer">
+            <span class="s-handle">@DaviCardosobrr</span>
+            <div class="s-dots">
+              <div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot on"></div>
+            </div>
+            <span class="s-brand">Consultor p/ Médicos</span>
+          </div>`
+      }
+    ]
+  },
+
+  {
+    id: 'aposentadoria-medico',
+    type: 'Educação',
+    typeColor: '#10b981',
+    icon: '📊',
+    title: 'Quanto um médico precisa investir para se aposentar rico',
+    slides: [
+      {
+        bg: 'linear-gradient(145deg,#001510 0%,#080810 100%)',
+        accent: '#10b981',
+        content: `
+          <div class="s-header">
+            <span class="s-tag" style="background:#10b98120;color:#10b981">📊 Educação</span>
+            <span class="s-num">01 / 06</span>
+          </div>
+          <div class="s-body">
+            <div class="s-eyebrow" style="color:#10b981">a pergunta que todo médico deveria fazer</div>
+            <div class="s-title">Quanto um médico precisa investir para se <em style="color:#10b981">aposentar rico?</em></div>
+            <div class="s-divider" style="background:#10b981"></div>
+            <div class="s-text">Os números vão te surpreender.</div>
+          </div>
+          <div class="s-footer">
+            <span class="s-handle">@DaviCardosobrr</span>
+            <div class="s-dots">
+              <div class="s-dot on"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div>
+            </div>
+            <span class="s-brand">Consultor Financeiro</span>
+          </div>`
+      },
+      {
+        bg: 'linear-gradient(145deg,#001210 0%,#080810 100%)',
+        accent: '#10b981',
+        content: `
+          <div class="s-header">
+            <span class="s-tag" style="background:#10b98120;color:#10b981">📊 Educação</span>
+            <span class="s-num">02 / 06</span>
+          </div>
+          <div class="s-body">
+            <div class="s-eyebrow" style="color:#10b981">Cenário A — começa aos 30</div>
+            <div class="s-big" style="color:#10b981">R$ 3.000<span style="font-size:.4em;opacity:.6">/mês</span></div>
+            <div class="s-big-sub">investidos dos 30 aos 65 anos · 8% ao ano</div>
+            <div class="s-divider" style="background:#10b981"></div>
+            <div class="s-highlight" style="border-left:3px solid #10b981">
+              Resultado: <strong style="color:#10b981;font-size:18px">~R$ 6,5 milhões</strong>
+            </div>
+          </div>
+          <div class="s-footer">
+            <span class="s-handle">@DaviCardosobrr</span>
+            <div class="s-dots">
+              <div class="s-dot"></div><div class="s-dot on"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div>
+            </div>
+            <span class="s-brand">Consultor Financeiro</span>
+          </div>`
+      },
+      {
+        bg: 'linear-gradient(145deg,#100800 0%,#080810 100%)',
+        accent: '#f97316',
+        content: `
+          <div class="s-header">
+            <span class="s-tag" style="background:#f9731620;color:#f97316">📊 Educação</span>
+            <span class="s-num">03 / 06</span>
+          </div>
+          <div class="s-body">
+            <div class="s-eyebrow" style="color:#f97316">Cenário B — começa aos 35</div>
+            <div class="s-big" style="color:#f97316">R$ 5.000<span style="font-size:.4em;opacity:.6">/mês</span></div>
+            <div class="s-big-sub">investidos dos 35 aos 65 anos · 8% ao ano</div>
+            <div class="s-divider" style="background:#f97316"></div>
+            <div class="s-highlight" style="border-left:3px solid #f97316">
+              Resultado: <strong style="color:#f97316;font-size:18px">~R$ 7 milhões</strong><br>
+              <span style="font-size:12px;opacity:.7">Mas investiu R$600.000 <strong>a mais</strong> para chegar lá.</span>
+            </div>
+          </div>
+          <div class="s-footer">
+            <span class="s-handle">@DaviCardosobrr</span>
+            <div class="s-dots">
+              <div class="s-dot"></div><div class="s-dot"></div><div class="s-dot on"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div>
+            </div>
+            <span class="s-brand">Consultor Financeiro</span>
+          </div>`
+      },
+      {
+        bg: 'linear-gradient(145deg,#001210 0%,#080810 100%)',
+        accent: '#10b981',
+        content: `
+          <div class="s-header">
+            <span class="s-tag" style="background:#10b98120;color:#10b981">📊 Educação</span>
+            <span class="s-num">04 / 06</span>
+          </div>
+          <div class="s-body" style="justify-content:center;text-align:center">
+            <div style="font-size:52px;margin-bottom:16px">⏳</div>
+            <div class="s-title">O <em style="color:#10b981">tempo</em> é o seu principal ativo.</div>
+            <div class="s-divider" style="background:#10b981;margin:16px auto"></div>
+            <div class="s-text">Não o valor que você investe.</div>
+          </div>
+          <div class="s-footer">
+            <span class="s-handle">@DaviCardosobrr</span>
+            <div class="s-dots">
+              <div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot on"></div><div class="s-dot"></div><div class="s-dot"></div>
+            </div>
+            <span class="s-brand">Consultor Financeiro</span>
+          </div>`
+      },
+      {
+        bg: 'linear-gradient(145deg,#001210 0%,#080810 100%)',
+        accent: '#10b981',
+        content: `
+          <div class="s-header">
+            <span class="s-tag" style="background:#10b98120;color:#10b981">📊 Educação</span>
+            <span class="s-num">05 / 06</span>
+          </div>
+          <div class="s-body">
+            <div class="s-eyebrow" style="color:#10b981">com apenas R$3.000/mês</div>
+            <div class="s-title">Cada ano que passa <em style="color:#f97316">custa caro.</em></div>
+            <div class="s-divider" style="background:#10b981"></div>
+            <ul class="s-list">
+              <li><span class="icon">🟢</span>Começa aos 30 → <strong style="color:#10b981">R$ 6,5 milhões</strong></li>
+              <li><span class="icon">🟡</span>Começa aos 35 → <strong style="color:#f59e0b">R$ 4,3 milhões</strong></li>
+              <li><span class="icon">🔴</span>Começa aos 40 → <strong style="color:#f97316">R$ 2,7 milhões</strong></li>
+            </ul>
+          </div>
+          <div class="s-footer">
+            <span class="s-handle">@DaviCardosobrr</span>
+            <div class="s-dots">
+              <div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot on"></div><div class="s-dot"></div>
+            </div>
+            <span class="s-brand">Consultor Financeiro</span>
+          </div>`
+      },
+      {
+        bg: 'linear-gradient(145deg,#001a14 0%,#080810 100%)',
+        accent: '#10b981',
+        content: `
+          <div class="s-header">
+            <span class="s-tag" style="background:#10b98120;color:#10b981">📊 Educação</span>
+            <span class="s-num">06 / 06</span>
+          </div>
+          <div class="s-body" style="justify-content:center">
+            <div class="s-title">Quando você vai <em style="color:#10b981">começar?</em></div>
+            <div class="s-divider" style="background:#10b981"></div>
+            <div class="s-highlight" style="border-left:3px solid #10b981;font-size:15px">
+              DM <strong style="color:#10b981">"APOSENTADORIA"</strong> e te mostro um plano real baseado na sua situação.
+            </div>
+          </div>
+          <div class="s-footer">
+            <span class="s-handle">@DaviCardosobrr</span>
+            <div class="s-dots">
+              <div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot on"></div>
+            </div>
+            <span class="s-brand">Consultor p/ Médicos</span>
+          </div>`
+      }
+    ]
+  },
+
+  {
+    id: 'plantoes-liberdade',
+    type: 'Prova Social',
+    typeColor: '#06b6d4',
+    icon: '🏆',
+    title: 'De plantões obrigatórios para liberdade de escolha',
+    slides: [
+      {
+        bg: 'linear-gradient(145deg,#00101a 0%,#080810 100%)',
+        accent: '#06b6d4',
+        content: `
+          <div class="s-header">
+            <span class="s-tag" style="background:#06b6d420;color:#06b6d4">🏆 Prova Social</span>
+            <span class="s-num">01 / 06</span>
+          </div>
+          <div class="s-body">
+            <div class="s-eyebrow" style="color:#06b6d4">caso real de um cliente</div>
+            <div class="s-title">De plantões <em style="color:#f97316">obrigatórios</em> para <em style="color:#06b6d4">liberdade de escolha.</em></div>
+            <div class="s-divider" style="background:#06b6d4"></div>
+            <div class="s-text">A história de um médico cliente meu.</div>
+          </div>
+          <div class="s-footer">
+            <span class="s-handle">@DaviCardosobrr</span>
+            <div class="s-dots">
+              <div class="s-dot on"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div>
+            </div>
+            <span class="s-brand">Consultor Financeiro</span>
+          </div>`
+      },
+      {
+        bg: 'linear-gradient(145deg,#150800 0%,#080810 100%)',
+        accent: '#f97316',
+        content: `
+          <div class="s-header">
+            <span class="s-tag" style="background:#f9731620;color:#f97316">🏆 Prova Social</span>
+            <span class="s-num">02 / 06</span>
+          </div>
+          <div class="s-body">
+            <div class="s-eyebrow" style="color:#f97316">antes — a situação inicial</div>
+            <div class="s-title">Cardiologista, <em style="color:#f97316">42 anos.</em></div>
+            <div class="s-divider" style="background:#f97316"></div>
+            <ul class="s-list">
+              <li><span class="icon">😰</span>60h de trabalho por semana</li>
+              <li><span class="icon">📉</span>Nenhum planejamento financeiro real</li>
+              <li><span class="icon">😔</span>Sensação constante de que nunca era suficiente</li>
+            </ul>
+          </div>
+          <div class="s-footer">
+            <span class="s-handle">@DaviCardosobrr</span>
+            <div class="s-dots">
+              <div class="s-dot"></div><div class="s-dot on"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div>
+            </div>
+            <span class="s-brand">Consultor Financeiro</span>
+          </div>`
+      },
+      {
+        bg: 'linear-gradient(145deg,#00101a 0%,#080810 100%)',
+        accent: '#06b6d4',
+        content: `
+          <div class="s-header">
+            <span class="s-tag" style="background:#06b6d420;color:#06b6d4">🏆 Prova Social</span>
+            <span class="s-num">03 / 06</span>
+          </div>
+          <div class="s-body">
+            <div class="s-eyebrow" style="color:#06b6d4">o processo — 18 meses de trabalho</div>
+            <div class="s-title">O que <em style="color:#06b6d4">construímos</em> juntos:</div>
+            <div class="s-divider" style="background:#06b6d4"></div>
+            <ul class="s-list">
+              <li><span class="icon">🔍</span>Diagnóstico financeiro completo</li>
+              <li><span class="icon">🛡️</span>Fundo de emergência robusto</li>
+              <li><span class="icon">📈</span>Portfólio diversificado com estratégia</li>
+              <li><span class="icon">🏦</span>Previdência PGBL otimizada</li>
+            </ul>
+          </div>
+          <div class="s-footer">
+            <span class="s-handle">@DaviCardosobrr</span>
+            <div class="s-dots">
+              <div class="s-dot"></div><div class="s-dot"></div><div class="s-dot on"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div>
+            </div>
+            <span class="s-brand">Consultor Financeiro</span>
+          </div>`
+      },
+      {
+        bg: 'linear-gradient(145deg,#001a14 0%,#080810 100%)',
+        accent: '#10b981',
+        content: `
+          <div class="s-header">
+            <span class="s-tag" style="background:#10b98120;color:#10b981">🏆 Prova Social</span>
+            <span class="s-num">04 / 06</span>
+          </div>
+          <div class="s-body">
+            <div class="s-eyebrow" style="color:#10b981">depois — resultado atual</div>
+            <div class="s-title">O que mudou na <em style="color:#10b981">vida dele:</em></div>
+            <div class="s-divider" style="background:#10b981"></div>
+            <ul class="s-list">
+              <li><span class="icon">✅</span>Renda passiva = <strong>40% das despesas cobertas</strong></li>
+              <li><span class="icon">✅</span>Reduziu plantões sem reduzir patrimônio</li>
+              <li><span class="icon">✅</span>Sabe exatamente para onde vai cada real</li>
+              <li><span class="icon">✅</span>Paz de espírito que nunca tinha tido</li>
+            </ul>
+          </div>
+          <div class="s-footer">
+            <span class="s-handle">@DaviCardosobrr</span>
+            <div class="s-dots">
+              <div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot on"></div><div class="s-dot"></div><div class="s-dot"></div>
+            </div>
+            <span class="s-brand">Consultor Financeiro</span>
+          </div>`
+      },
+      {
+        bg: 'linear-gradient(145deg,#00101a 0%,#080810 100%)',
+        accent: '#06b6d4',
+        content: `
+          <div class="s-header">
+            <span class="s-tag" style="background:#06b6d420;color:#06b6d4">🏆 Prova Social</span>
+            <span class="s-num">05 / 06</span>
+          </div>
+          <div class="s-body" style="justify-content:center;text-align:center">
+            <div style="font-size:52px;margin-bottom:16px">💡</div>
+            <div class="s-title">A mudança não foi no <em style="color:#f97316">salário.</em></div>
+            <div class="s-divider" style="background:#06b6d4;margin:16px auto"></div>
+            <div class="s-title" style="font-size:clamp(22px,5vmin,32px)">Foi na <em style="color:#06b6d4">estratégia.</em></div>
+          </div>
+          <div class="s-footer">
+            <span class="s-handle">@DaviCardosobrr</span>
+            <div class="s-dots">
+              <div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot on"></div><div class="s-dot"></div>
+            </div>
+            <span class="s-brand">Consultor Financeiro</span>
+          </div>`
+      },
+      {
+        bg: 'linear-gradient(145deg,#00101a 0%,#080810 100%)',
+        accent: '#06b6d4',
+        content: `
+          <div class="s-header">
+            <span class="s-tag" style="background:#06b6d420;color:#06b6d4">🏆 Prova Social</span>
+            <span class="s-num">06 / 06</span>
+          </div>
+          <div class="s-body" style="justify-content:center">
+            <div class="s-title">Quer construir uma história <em style="color:#06b6d4">parecida?</em></div>
+            <div class="s-divider" style="background:#06b6d4"></div>
+            <div class="s-highlight" style="border-left:3px solid #06b6d4;font-size:15px">
+              Me manda um DM aqui.<br><br>A <strong style="color:#06b6d4">primeira conversa é gratuita.</strong>
+            </div>
+          </div>
+          <div class="s-footer">
+            <span class="s-handle">@DaviCardosobrr</span>
+            <div class="s-dots">
+              <div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot on"></div>
+            </div>
+            <span class="s-brand">Consultor p/ Médicos</span>
+          </div>`
+      }
+    ]
+  },
+
+  {
+    id: 'so-atendo-medicos',
+    type: 'Posicionamento',
+    typeColor: '#8b5cf6',
+    icon: '💼',
+    title: 'Por que eu só atendo médicos',
+    slides: [
+      {
+        bg: 'linear-gradient(145deg,#0d0018 0%,#080810 100%)',
+        accent: '#8b5cf6',
+        content: `
+          <div class="s-header">
+            <span class="s-tag" style="background:#8b5cf620;color:#8b5cf6">💼 Posicionamento</span>
+            <span class="s-num">01 / 05</span>
+          </div>
+          <div class="s-body">
+            <div class="s-eyebrow" style="color:#8b5cf6">uma decisão intencional</div>
+            <div class="s-title">Por que eu <em style="color:#8b5cf6">só atendo médicos.</em></div>
+            <div class="s-divider" style="background:#8b5cf6"></div>
+            <div class="s-text">Eu poderia atender qualquer pessoa.<br>Mas escolhi não fazer isso.</div>
+          </div>
+          <div class="s-footer">
+            <span class="s-handle">@DaviCardosobrr</span>
+            <div class="s-dots">
+              <div class="s-dot on"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div>
+            </div>
+            <span class="s-brand">Consultor Financeiro</span>
+          </div>`
+      },
+      {
+        bg: 'linear-gradient(145deg,#0d0018 0%,#080810 100%)',
+        accent: '#8b5cf6',
+        content: `
+          <div class="s-header">
+            <span class="s-tag" style="background:#8b5cf620;color:#8b5cf6">💼 Posicionamento</span>
+            <span class="s-num">02 / 05</span>
+          </div>
+          <div class="s-body">
+            <div class="s-eyebrow" style="color:#8b5cf6">o que eu sei sobre médicos</div>
+            <div class="s-title">Médicos têm desafios <em style="color:#8b5cf6">únicos.</em></div>
+            <div class="s-divider" style="background:#8b5cf6"></div>
+            <ul class="s-list">
+              <li><span class="icon">💉</span>Renda variável e imprevisível por plantões</li>
+              <li><span class="icon">🏢</span>Complexidade com estrutura PJ e fiscal</li>
+              <li><span class="icon">⏰</span>Pouco tempo disponível para gestão financeira</li>
+              <li><span class="icon">💰</span>Alta renda, mas nem sempre alto patrimônio</li>
+            </ul>
+          </div>
+          <div class="s-footer">
+            <span class="s-handle">@DaviCardosobrr</span>
+            <div class="s-dots">
+              <div class="s-dot"></div><div class="s-dot on"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div>
+            </div>
+            <span class="s-brand">Consultor Financeiro</span>
+          </div>`
+      },
+      {
+        bg: 'linear-gradient(145deg,#0d0018 0%,#080810 100%)',
+        accent: '#8b5cf6',
+        content: `
+          <div class="s-header">
+            <span class="s-tag" style="background:#8b5cf620;color:#8b5cf6">💼 Posicionamento</span>
+            <span class="s-num">03 / 05</span>
+          </div>
+          <div class="s-body">
+            <div class="s-eyebrow" style="color:#8b5cf6">generalista vs. especialista</div>
+            <div class="s-title">Quando você se especializa, você <em style="color:#8b5cf6">aprofunda.</em></div>
+            <div class="s-divider" style="background:#8b5cf6"></div>
+            <div class="s-text">Um generalista nunca vai entender as nuances financeiras de um médico no nível que alguém que <strong>só atende médicos</strong> entende.</div>
+          </div>
+          <div class="s-footer">
+            <span class="s-handle">@DaviCardosobrr</span>
+            <div class="s-dots">
+              <div class="s-dot"></div><div class="s-dot"></div><div class="s-dot on"></div><div class="s-dot"></div><div class="s-dot"></div>
+            </div>
+            <span class="s-brand">Consultor Financeiro</span>
+          </div>`
+      },
+      {
+        bg: 'linear-gradient(145deg,#0d0018 0%,#080810 100%)',
+        accent: '#8b5cf6',
+        content: `
+          <div class="s-header">
+            <span class="s-tag" style="background:#8b5cf620;color:#8b5cf6">💼 Posicionamento</span>
+            <span class="s-num">04 / 05</span>
+          </div>
+          <div class="s-body" style="justify-content:center;text-align:center">
+            <div style="font-size:52px;margin-bottom:16px">🏥</div>
+            <div class="s-title">Você confia sua saúde ao <em style="color:#f97316">generalista?</em></div>
+            <div class="s-divider" style="background:#8b5cf6;margin:16px auto"></div>
+            <div class="s-title" style="font-size:clamp(18px,4vmin,26px)">Suas finanças merecem o mesmo nível de <em style="color:#8b5cf6">especialização.</em></div>
+          </div>
+          <div class="s-footer">
+            <span class="s-handle">@DaviCardosobrr</span>
+            <div class="s-dots">
+              <div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot on"></div><div class="s-dot"></div>
+            </div>
+            <span class="s-brand">Consultor Financeiro</span>
+          </div>`
+      },
+      {
+        bg: 'linear-gradient(145deg,#100020 0%,#080810 100%)',
+        accent: '#8b5cf6',
+        content: `
+          <div class="s-header">
+            <span class="s-tag" style="background:#8b5cf620;color:#8b5cf6">💼 Posicionamento</span>
+            <span class="s-num">05 / 05</span>
+          </div>
+          <div class="s-body" style="justify-content:center">
+            <div class="s-title">Esse é o conhecimento específico que muda o <em style="color:#8b5cf6">patrimônio</em> dos meus clientes.</div>
+            <div class="s-divider" style="background:#8b5cf6"></div>
+            <div class="s-highlight" style="border-left:3px solid #8b5cf6;font-size:14px">
+              Você valoriza um especialista no seu nicho?<br><br>Me conta nos comentários. 👇
+            </div>
+          </div>
+          <div class="s-footer">
+            <span class="s-handle">@DaviCardosobrr</span>
+            <div class="s-dots">
+              <div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot"></div><div class="s-dot on"></div>
+            </div>
+            <span class="s-brand">Consultor p/ Médicos</span>
+          </div>`
+      }
+    ]
+  }
+];
+
+// ═══════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════
+let currentDeck = null;
+let currentSlide = 0;
+
+// ═══════════════════════════════════════
+// GALLERY
+// ═══════════════════════════════════════
+function buildGallery() {
+  const cards = document.getElementById('cards');
+  cards.innerHTML = DECKS.map((deck, i) => `
+    <div class="gcard" onclick="openViewer(${i})">
+      <div class="gcard-thumb" style="background:linear-gradient(135deg,${deck.typeColor}15,${deck.typeColor}05)">
+        <div class="big-num" style="color:${deck.typeColor}">${String(i+1).padStart(2,'0')}</div>
+        <div class="thumb-content">
+          <span class="thumb-icon">${deck.icon}</span>
+          <div class="thumb-title">"${deck.title.substring(0,40)}${deck.title.length>40?'...':''}"</div>
+        </div>
+      </div>
+      <div class="gcard-body">
+        <div class="gcard-type" style="color:${deck.typeColor}">${deck.icon} ${deck.type}</div>
+        <div class="gcard-name">${deck.title}</div>
+        <div class="gcard-meta">
+          <span class="gcard-slides">${deck.slides.length} slides</span>
+          <button class="gcard-btn" style="background:${deck.typeColor}20;color:${deck.typeColor}">
+            Abrir →
+          </button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ═══════════════════════════════════════
+// VIEWER
+// ═══════════════════════════════════════
+function openViewer(deckIdx) {
+  currentDeck = deckIdx;
+  currentSlide = 0;
+  const deck = DECKS[deckIdx];
+  document.getElementById('vtitle').textContent = deck.title;
+  document.getElementById('viewer').classList.add('open');
+  document.getElementById('screenshotTip').style.display = 'block';
+  buildSlides();
+  goToSlide(0);
+}
+
+function closeViewer() {
+  document.getElementById('viewer').classList.remove('open');
+  document.getElementById('screenshotTip').style.display = 'none';
+  currentDeck = null;
+}
+
+function buildSlides() {
+  const deck = DECKS[currentDeck];
+  const container = document.getElementById('slides');
+  container.innerHTML = deck.slides.map((slide, i) => `
+    <div class="slide" id="slide-${i}" style="background:${slide.bg}">
+      ${slide.content}
+    </div>
+  `).join('');
+
+  // Dots
+  const dots = document.getElementById('viewerDots');
+  dots.innerHTML = deck.slides.map((_, i) =>
+    `<div class="vdot" id="vdot-${i}" onclick="goToSlide(${i})"></div>`
+  ).join('');
+}
+
+function goToSlide(idx) {
+  const deck = DECKS[currentDeck];
+  if (idx < 0 || idx >= deck.slides.length) return;
+
+  document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.vdot').forEach(d => d.classList.remove('on'));
+
+  const slideEl = document.getElementById('slide-' + idx);
+  if (slideEl) slideEl.classList.add('active');
+
+  const dotEl = document.getElementById('vdot-' + idx);
+  if (dotEl) dotEl.classList.add('on');
+
+  currentSlide = idx;
+  document.getElementById('vcounter').textContent = `${idx + 1} / ${deck.slides.length}`;
+  document.getElementById('prevBtn').disabled = idx === 0;
+  document.getElementById('nextBtn').disabled = idx === deck.slides.length - 1;
+}
+
+function nav(dir) {
+  goToSlide(currentSlide + dir);
+}
+
+// ═══════════════════════════════════════
+// KEYBOARD
+// ═══════════════════════════════════════
+document.addEventListener('keydown', e => {
+  if (!document.getElementById('viewer').classList.contains('open')) return;
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') nav(1);
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') nav(-1);
+  if (e.key === 'Escape') closeViewer();
+});
+
+// ═══════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════
+buildGallery();
+</script>
+</body>
+</html>
